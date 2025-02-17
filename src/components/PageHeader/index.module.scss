@@ -1,0 +1,11 @@
+@import "src/assets/variables";
+
+.pageHeader {
+  padding: 60px 0;
+}
+
+.pageTitle {
+  margin: 0;
+  font-size: pxToRem(36);
+  font-weight: $semiBold;
+}

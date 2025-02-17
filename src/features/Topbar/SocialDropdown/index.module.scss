@@ -1,0 +1,68 @@
+@import "src/assets/variables";
+
+.socialMenu {
+  background: $colorShade110;
+  border-radius: 20px;
+  padding: $gapS;
+  margin: 0;
+  position: absolute;
+  top: 50px;
+  right: 10px;
+}
+
+.socialMenuItem {
+  margin-bottom: 10px;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.link {
+  display: flex;
+  align-items: center;
+  color: $colorBaseWhite;
+}
+
+.icon {
+  background: $colorShade100;
+  border-radius: 8px;
+  margin-right: 13px;
+
+  > div {
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+.socialMenuButton {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  margin-left: 6px;
+  background: $colorShade110;
+  transition: 0.2s;
+  border: 1px solid transparent;
+  position: relative;
+  cursor: pointer;
+
+  &:hover {
+    border-color: $colorBaseWhite;
+  }
+
+  &.open {
+    border-color: $colorBaseWhite;
+  }
+
+  &:before {
+    position: relative;
+    height: 20px;
+    content: url("../../../assets/icons/dots.svg");
+  }
+}

@@ -1,0 +1,19 @@
+@import "src/assets/variables";
+
+.container {
+  max-width: 1024px;
+  margin: auto;
+  padding: 79px 0;
+.wrapper {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(330px, 1fr));
+  gap: $gapS;
+}
+.heading{
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 30px;
+  padding: 60px 0;
+}
+}

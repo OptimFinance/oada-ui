@@ -1,0 +1,38 @@
+@import "src/assets/variables";
+.container {
+  position: relative;
+  display: inline-block;
+  height: 16px;
+  vertical-align: middle;
+  cursor: pointer;
+}
+
+.popup {
+  display: block;
+  position: absolute;
+  text-align: center;
+  z-index: 10;
+  background: $colorGray900;
+  border-radius: 12px;
+  border: 1px solid $colorBaseBlack;
+  padding: 1em;
+  width: 180px;
+  font-size: $fontS;
+  font-weight: normal;
+  color: $colorBaseWhite;
+
+  &.right {
+    left: 25px;
+    top: -50%;
+  }
+
+  &.top {
+    left: 50%;
+    transform: translate(-50%, -100%);
+  }
+}
+
+.icon {
+  fill: $colorOptimGray200;
+  margin-left: 5px;
+}

@@ -1,0 +1,68 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url("non.geist");
+
+@layer base {
+  body {
+    @apply bg-ui-base-background;
+  }
+  h1 {
+    @apply text-[56px] leading-[64px] font-semibold;
+  }
+  h2 {
+    @apply text-[48px] leading-[56px] font-semibold;
+  }
+  h3 {
+    @apply text-[40px] leading-[48px] font-semibold;
+  }
+  h4 {
+    @apply text-[32px] leading-[40px] font-semibold;
+  }
+  h5 {
+    @apply text-[24px] leading-[32px] font-semibold;
+  }
+  h6 {
+    @apply text-[20px] leading-[28px] font-semibold;
+  }
+}
+
+body {
+  font-family: "Geist Variable";
+}
+
+* {
+  max-width: 98vw;
+}
+
+@layer utilities {
+  .card-gradient {
+    @apply bg-[radial-gradient(107.29%_72.19%_at_3.74%_100%,_#15262e59_0%,_#1A1A25_100%)];
+  }
+  .primary-gradient {
+    @apply bg-[linear-gradient(90deg,_#2853EB_0%,_#9C95E9_100%)];
+  }
+}
+
+/* width */
+::-webkit-scrollbar {
+  width: 0px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: transaprent;
+  border-radius: 5px;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: transaprent;
+  border-radius: 5px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: transaprent;
+}

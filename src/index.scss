@@ -1,0 +1,36 @@
+@import "assets/variables";
+@import url("assets/normalize.css");
+@import url("assets/fonts");
+
+*, *:before, *:after {
+  box-sizing: border-box;
+}
+html {
+  height: 100%;
+}
+html, body, #root {
+  height: 100%;
+}
+body {
+  background: $colorBaseBlack;
+  color: $colorBaseWhite;
+  font-size: 16px;
+  font-family: Roobert, sans-serif;
+  font-weight: 400;
+}
+img {
+  max-width: 100%;
+}
+a {
+  color: $colorGray200;
+  text-decoration: none;
+  transition: 0.2s;
+  
+  &.active, &:hover, &:focus {
+    color: $colorBaseWhite;
+  }
+}
+
+.flex-separatored > .flex {
+  border-left: 1px solid white;
+}

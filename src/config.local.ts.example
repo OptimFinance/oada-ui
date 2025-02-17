@@ -1,0 +1,31 @@
+import { Network } from 'lucid-cardano';
+
+// https://cardano-preview.blockfrost.io/api/v0';
+const blockfrostEndpoint: string = 'https://preview-server.optim.finance/blockfrost';
+// const blockfrostEndpoint: string = 'https://preprod-server.optim.finance/blockfrost';
+// const blockfrostEndpoint: string = 'https://spo-server.optim.finance/blockfrost';
+// const blockfrostEndpoint: string = 'http://localhost:8083/blockfrost';
+// const cardanoNetwork: Network = 'Preprod';
+const cardanoNetwork: Network = 'Preview';
+// const cardanoNetwork: Network = 'Mainnet';
+// const blockfrostKey: string = 'mainnetOpWFIMyQPVG3Zap4EOmBkKmEzGmHIilz';
+const blockfrostKey: string = 'previewMtZHkzC9Pfwdb8l5uLF13HJyQPJtsLpy';
+// const blockfrostKey: string = 'preprodnVHn6TFwu2L0cARVUdGg2RUYh1xsy23g';
+const optimServerUrl: string = 'https://preview-server.optim.finance';
+// const optimServerUrl: string = 'https://preprod-server.optim.finance';
+// const optimServerUrl: string = 'https://spo-server.optim.finance';
+// const optimServerUrl: string = 'http://localhost:8083';
+const optimServer2Url: string = 'https://preview-server.optim.finance';
+// const optimServer2Url: string = 'https://preprod-server.optim.finance:8083';
+// const optimServer2Url: string = 'https://spo-server.optim.finance';
+// const optimServer2Url: string = 'http://localhost:8083';
+const verifiedNamesUrl: string = 'https://raw.githubusercontent.com/OptimFinance/verified-offers/main/names';
+
+export {
+  blockfrostEndpoint,
+  cardanoNetwork,
+  blockfrostKey,
+  optimServerUrl,
+  optimServer2Url,
+  verifiedNamesUrl,
+};

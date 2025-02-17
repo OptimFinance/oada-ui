@@ -1,0 +1,123 @@
+@import "src/assets/variables";
+
+.bondCardWrapper {
+  width: 100%;
+  max-width: 540px;
+  border-radius: $panelBorderRadius;
+  border: double 2px transparent;
+  background-image: linear-gradient(#15151E, #15151E), linear-gradient(200deg, #9792E9, #2A54EB);
+  background-origin: border-box;
+  background-clip: content-box, border-box;
+}
+
+.bondCard {
+  padding: $gapLL;
+  &.noTopPadding {
+    padding-top: 0;
+  }
+}
+
+.cardTitle {
+  font-size: $font2XxL;
+  text-transform: uppercase;
+  background: linear-gradient(269.81deg, #FFFFFF 2.38%, rgba(255, 255, 255, 0.7) 101.77%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-fill-color: transparent;
+  position: relative;
+  padding-top: 140px;
+  text-align: center;
+
+  &:before {
+    content: "";
+    display: inline-block;
+    background-image: url("../../assets/icons/diamond-512.svg");
+    background-size: 120px 120px;
+    width: 120px;
+    height: 120px;
+    // content: url('../../assets/images/briliant.svg');
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translate(-50%, 0);
+  }
+}
+
+.cardSubtitle {
+  color: $colorViolet300;
+  text-align: center;
+  margin-top: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.cardButtonWrapper {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  margin-top: 30px;
+}
+
+.cardButton {
+  font-weight: $semiBold;
+  font-size: pxToRem(18);
+  border: 1px solid $colorShade90;
+  padding: $gapXs $gapML 14px;
+  border-radius: 20px;
+}
+
+.tableWrapper {
+  column-gap: 40px;
+  columns: 2;
+  column-rule: 1px solid $colorShade90;
+  border: 1px solid $colorShade90;
+  border-radius: 12px;
+  padding: $gapS;
+  margin-top: 30px;
+  @media only screen and (max-width: 540px) {
+    columns: 1;
+  }
+}
+
+.tableCellPair {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+  font-size: $fontS;
+}
+
+.tableCell {
+
+  &:first-child {
+    color: $colorOptimGray200;
+    padding-right: $gapXxs;
+    flex-shrink: 0;
+  }
+
+  &:last-child {
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+}
+
+@media only screen and (max-width: $breakpointTablet) {
+  .bondCardWrapper {
+    max-width: 100%;
+    margin-bottom: 20px;
+  }
+}
+
+@media only screen and (max-width: $breakpointPhone) {
+  .tableColumn {
+    width: 100%;
+    margin-right: 0;
+    margin-bottom: 10px;
+
+    &:after {
+      display: none;
+    }
+  }
+}

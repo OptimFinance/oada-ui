@@ -1,0 +1,42 @@
+@import "../../assets/base/shared.scss";
+@import "src/assets/variables";
+
+.container {
+  width: 100%;
+
+  .input {
+    outline: none;
+    border: none;
+    border-radius: 14px;
+    padding: $gapM $gapLL;
+    width: 100%;
+    height: 42px;
+    margin-top: 8px;
+    color: white;
+    background: $colorShade110;
+
+    &::placeholder {
+      color: $colorGray200;
+    }
+    &:hover {
+      background: $colorShade100;
+    }
+    &:focus {
+      border: 1px solid $colorGray300;
+    }
+  }
+  .errorInput {
+    border: 1px solid $colorError600;
+  }
+
+  .label {
+    color: $colorGray200;
+    padding: 0;
+    margin: 0 !important;
+    font-size: 14px;
+  }
+  .errorText {
+    color: $colorError600;
+    margin-top: $gapMxs;
+  }
+}

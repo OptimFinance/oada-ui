@@ -1,0 +1,20 @@
+@import "src/assets/variables";
+
+.container{
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-image: $gradiantBg4;
+  padding: 44px 0;
+
+  p{
+    font-size: 20px;
+  }
+
+  .image {
+    width: 100px;
+    height: 100px;
+  }
+}

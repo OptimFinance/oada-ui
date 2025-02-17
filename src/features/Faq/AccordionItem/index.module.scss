@@ -1,0 +1,58 @@
+@import "src/assets/variables";
+
+.accordionItem {
+  overflow: hidden;
+  margin-bottom: $gapS;
+  padding-bottom: $gapM;
+  border-bottom: 1px solid #3c3c55;
+
+  @media only screen and (max-width: $breakpointPhone) {
+    border-radius: 15px;
+  }
+}
+
+.accordionHeader {
+  padding: 0 $gapLL;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: $fontM;
+  font-weight: $semiBold;
+  cursor: pointer;
+  color: $colorBaseWhite;
+
+  .faqTitle {
+    font-size: $fontM;
+    margin: 0;
+  }
+  .button {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  @media only screen and (max-width: $breakpointPhone) {
+    .button {
+      width: 60px;
+
+      img {
+        transform: scale(0.9);
+      }
+    }
+  }
+}
+
+.accordionBody {
+  padding: $gapM $gapLL;
+  font-size: $fontM;
+  font-weight: $regular;
+  color: $colorOptimGray200;
+
+  @media only screen and (max-width: $breakpointPhone) {
+    padding: $gapMxs 0;
+  }
+  p:not(:first-child) {
+    margin-top: $gapXs;
+  }
+}
