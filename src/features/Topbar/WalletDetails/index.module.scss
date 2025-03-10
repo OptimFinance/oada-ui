@@ -1,0 +1,125 @@
+
+@import "src/assets/variables";
+
+.walletDetailsWrapper {
+  position: relative;
+}
+
+.container {
+  background: $colorShade110;
+  border-radius: 20px;
+  padding: $gapS;
+  margin: 0;
+  position: absolute;
+  top: 50px;
+  right: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+}
+
+.title {
+  display: flex;
+  align-items: center;
+  .logo {
+    margin-right: 10px;
+    height: 20px;
+    svg {
+      width: 20px;
+      height: 20px;
+    }
+  }
+}
+.address {
+  width: 100%;
+  .value {
+    display: inline-block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .icon {
+    margin-right: 6px;
+  }
+}
+.buttons {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  .icon {
+    margin-right: 6px;
+  }
+}
+.box {
+  border: 1px solid $colorGray600;
+  border-radius: 8px;
+  padding: 5px 10px;
+}
+.wallets {
+  width: 100%;
+  color: $colorGray200;
+  td {
+    padding: 5px 0;
+    vertical-align: middle;
+    &:last-of-type{
+      text-align: right;
+      color: $colorBaseWhite;
+    }
+  }
+  .icon {
+    vertical-align: middle;
+    margin-right: 10px;
+  }
+}
+.disconnect {
+  .icon {
+    margin-right: 6px;
+  }
+}
+
+.walletDetailsButton {
+  height: 40px;
+  padding: $gapMxs;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 20px;
+  background: $colorShade110;
+  transition: 0.2s;
+  border: 1px solid $colorShade110;
+  position: relative;
+  max-width: 180px;
+  overflow: hidden;
+  font-weight: $regular;
+  font-size: $fontS;
+  margin-right: 6px;
+  cursor: pointer;
+
+  &:hover {
+    border-color: $colorBaseWhite;
+  }
+
+  &.open {
+    border-color: $colorBaseWhite;
+  }
+}
+
+.detailsAmount {
+  color: $colorOptimGray200;
+  word-wrap: none;
+  white-space: nowrap;
+
+  &:after {
+    content: '|';
+    padding: 0 $gapMxs;
+  }
+}
+
+.detailsAddress {
+  max-width: 100px;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  word-wrap: none;
+  white-space: nowrap;
+}
+

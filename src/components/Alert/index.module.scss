@@ -1,0 +1,108 @@
+@import "src/assets/variables";
+
+.alertWrapper {
+  position: fixed;
+  top: 80px;
+  right: 14px;
+  z-index: 200;
+}
+
+.alert {
+  padding: $gapS;
+  border-radius: 20px;
+  background: $colorShade110;
+  width: 376px;
+  border: 1px solid $colorBaseBlack;
+  margin-bottom: $gapL;
+  position: relative;
+}
+
+.iconWrapper {
+  width: 60px;
+  height: 60px;
+  background: $colorShade100;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &.success {
+    &:before {
+      width: 36px;
+      height: 36px;
+      content: "";
+      background: url("../../assets/icons/success-icon.svg");
+    }
+  }
+
+  &.error {
+    &:before {
+      width: 36px;
+      height: 36px;
+      content: "";
+      background: url("../../assets/icons/error-icon.svg");
+    }
+  }
+}
+
+.cross {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  right: 5px;
+  top: 5px;
+  cursor: pointer;
+
+  &:before {
+    display: inline-block;
+    content: url("../../assets/icons/cross-icon.svg")
+  }
+}
+
+.alertHeader {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.alertTitle {
+  font-size: $fontL;
+  font-weight: $semiBold;
+  margin-left: 13px;
+
+  &.green {
+    color: $colorGreen;
+  }
+
+  &.red {
+    color: $colorRed;
+  }
+}
+
+.buttonsWrapper {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.button {
+  width: 120px;
+  margin-left: 10px;
+}
+
+.message {
+  margin-bottom: 16px;
+  line-height: 1.5;
+  word-wrap: break-word;
+}
+
+.alertAnchor {
+  &:link {
+    color: $colorLightBlue;
+  }
+  &:hover {
+    text-decoration: underline;
+  }
+}

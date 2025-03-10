@@ -1,0 +1,17 @@
+@import "../../assets/base/shared.scss";
+@import '../../assets/variables';
+
+.navigator {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+
+  .text {
+    margin-left: 6px;
+  }
+}
+
+.navigator:hover * {
+  fill: $colorBaseWhite;
+  color: $colorBaseWhite;
+}

@@ -1,0 +1,20 @@
+@import "src/assets/variables";
+
+.breadcrumbs {
+  display: flex;
+  margin-bottom: 20px;
+}
+
+.breadcrumbsItem {
+  color: $colorOptimGray200;
+  position: relative;
+  padding-left: 26px;
+  margin-right: $gapMxs;
+
+  &:before {
+    position: absolute;
+    left: 0;
+    top: -1px;
+    content: url('./../../assets/icons/chevron-left.svg');
+  }
+}

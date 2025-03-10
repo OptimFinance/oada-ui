@@ -1,0 +1,16 @@
+@import "src/assets/variables";
+
+.dropdown {
+  position: absolute;
+  left: 0;
+  top: 70px;
+  background: $colorShade110;
+  border-radius: 12px;
+  padding: 1em;
+  width: fit-content;
+  cursor: pointer;
+  z-index: 199;
+}
+.open {
+  display: block;
+}

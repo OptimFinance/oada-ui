@@ -1,0 +1,122 @@
+@use "sass:math";
+
+@function pxToRem($px) {
+  @return #{math.div($px, 16)}rem;
+}
+
+// FONTS
+$light: 300;
+$regular: 400;
+$medium: 500;
+$semiBold: 600;
+$bold: 700;
+$black: 900;
+$fontXxs: pxToRem(10);
+$fontXs: pxToRem(12);
+$fontS: pxToRem(14);
+$fontM: pxToRem(16);
+$fontL: pxToRem(20);
+$fontXL: pxToRem(24);
+$fontXxL: pxToRem(30);
+$font2XxL: pxToRem(34);
+$fontXxxL: pxToRem(40);
+
+// COLORS
+$colorBaseBlack: #0c0c15;
+$colorBaseWhite: #ffffff;
+$colorShadowWhite: #ffffffc8;
+$colorGray25: #fcfcfd;
+$colorGray50: #f9fafb;
+$colorGray100: #f2f4f7;
+$colorGray200: #a3a3a3;
+$colorOptimGray200: #bbbbbe;
+$colorOptimGray700: #262626;
+$colorOptimGray900: #151515;
+$colorOptimGray115: #15151e;
+$colorGray300: #d0d5dd;
+$colorGray400: #98a2b3;
+$colorGray500: #667085;
+$colorGray600: #2d2d2d;
+$colorGray700: #344054;
+$colorGray800: #1e1e1e;
+$colorGray900: #151515;
+$colorShade90: #3c3c55;
+$priBtnColor: linear-gradient(90deg, #2853eb 0%, #9c95e9 100%);
+$colorViolet200: #ddd6fe;
+$colorViolet300: #9692ea;
+$colorViolet900: #491c96;
+$colorPurple200: #d9d6fe;
+$colorSuccess400: hsla(129, 32%, 65%, 1);
+$bgColorSuccess400: hsla(138, 39%, 52%, 1);
+$colorWarning: hsla(38, 80%, 67%, 1);
+$bgColorWarning: hsla(38, 80%, 67%, 1);
+$colorError600: hsla(3, 81%, 58%, 1);
+$colorError700: hsla(5, 64%, 66%, 1);
+$colorShade100: #2d2d40;
+$colorShade110: #1a1a25;
+$colorGreen: hsla(138, 39%, 52%, 1);
+$colorDarkGreen: hsla(153, 82%, 20%, 1);
+$colorRed: #f04438;
+$borderGradient: linear-gradient(95deg, #2a54eb, #9792e9);
+$colorBlue: #2d56eb;
+$colorLightBlue: #8cb8ff;
+
+// MEDIA BREAKPOINTS
+$breakpointLaptop: 1329px;
+$breakpointTablet: 1027px;
+$breakpointPhone: 767px;
+$breakpointSmallPhone: 414px;
+
+// PADDINGS GAPS
+$gapNone: pxToRem(0);
+$gapXxxs: pxToRem(4);
+$gapXxs: pxToRem(8);
+$gapMxs: pxToRem(10);
+$gapXs: pxToRem(12);
+$gapS: pxToRem(16);
+$gapM: pxToRem(20);
+$gapML: pxToRem(24);
+$gapL: pxToRem(26);
+$gapLL: pxToRem(30);
+$gapXL: pxToRem(32);
+$gap2XL: pxToRem(36);
+$gap3XL: pxToRem(40);
+$gap4XL: pxToRem(48);
+
+// SHADOWS
+$shadowXs: 0px 1px 2px rgba(16, 24, 40, 0.05);
+$shadowPrimary: 0px 1px 2px rgba(16, 24, 40, 0.05), 0px 0px 0px 4px #f4ebff;
+$shadowGrey: 0px 1px 2px rgba(16, 24, 40, 0.05), 0px 0px 0px 4px #f2f4f7;
+$shadowError: 0px 1px 2px rgba(16, 24, 40, 0.05), 0px 0px 0px 4px #fee4e2;
+$shadowLg: 0px 12px 16px -4px rgba(16, 24, 40, 0.08),
+  0px 4px 6px -2px rgba(16, 24, 40, 0.03);
+
+// GRADIENTS
+$gradiantBg1: radial-gradient(
+  86.72% 63.17% at 3.74% 100%,
+  rgba(21, 38, 46, 0.35) 0%,
+  $colorShade110 100%
+);
+$gradiantBg2: radial-gradient(
+  86.72% 63.17% at 3.74% 100%,
+  #141129 0%,
+  $colorShade110 100%
+);
+$gradiantBg3: radial-gradient(
+  86.28% 56.14% at 97.12% 3.58%,
+  rgba(36, 21, 32, 0.62) 0%,
+  $colorShade110 100%
+);
+$gradiantBg4: radial-gradient(
+  86.72% 63.17% at 3.74% 100%,
+  rgba(44, 56, 75, 0.3) 0%,
+  $colorShade110 100%
+);
+$gradiantBg5: radial-gradient(
+  86.72% 63.17% at 3.74% 100%,
+  #221b26 0%,
+  $colorShade110 100%
+);
+
+// BORDER-RADIUS
+$panelBorderRadius: 24px;

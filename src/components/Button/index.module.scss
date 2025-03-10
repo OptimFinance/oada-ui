@@ -1,0 +1,143 @@
+@import "src/assets/variables";
+
+.button {
+  border: none;
+  border-radius: 24px;
+  height: fit-content;
+  color: $colorBaseWhite;
+  min-height: 36px;
+  max-width: 100%;
+  overflow: hidden;
+  padding: 0 14px;
+  font-size: 14px;
+  font-weight: 400;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  user-select: none;
+  background: linear-gradient(90deg, #2853eb 0%, #9c95e9 100%);
+
+  &:focus {
+    box-shadow: 0px 0px 0px 2px #d6d3ff;
+  }
+  &:hover {
+    background: $colorBaseWhite;
+    color: $colorBaseBlack;
+  }
+  &:hover img.invertOnHover {
+    filter: invert(1)
+  }
+  &.primary {
+    background: $priBtnColor;
+
+    &:hover {
+      background: $colorBaseWhite;
+      color: $colorBaseBlack;
+    }
+  }
+
+  &.icon {
+    background: $colorGray900;
+    padding: 0;
+    height: 100%;
+    &:hover,
+    &:focus {
+      box-shadow: 0 0 0 1px $colorViolet200 inset;
+    }
+  }
+
+  &.clear {
+    background: transparent;
+    color: $colorBaseWhite;
+    border: 1px solid $colorGray600;
+    &:hover,
+    &:focus {
+      background-color: $colorBaseWhite;
+      color: $colorBaseBlack;
+    }
+  }
+  &.sm {
+    padding: 6px 0;
+    font-size: 12px;
+  }
+  &.md {
+    padding: 8px 0;
+    font-size: 12px;
+  }
+  &.lg {
+    padding: 10px 0;
+    font-size: 14px;
+    line-height: 24px;
+  }
+  &.xl {
+    padding: 10px 20px;
+    font-size: 16px;
+    line-height: 24px;
+  }
+  &.xxl {
+    padding: 15px 20px;
+    font-size: 16px;
+  }
+  &.secondary {
+    background: $colorShade100;
+    color: inherit;
+  }
+  &.white {
+    background: $colorBaseWhite;
+    color: $colorBaseBlack;
+
+    &:hover {
+      background: $colorBlue;
+      color: $colorBaseWhite;
+      svg * {
+        fill: $colorBaseWhite;
+      }
+    }
+  }
+  &:disabled {
+    opacity: 0.33;
+    pointer-events: none;
+  }
+  &.outlined {
+    background: transparent;
+    border: 1px solid $colorShade90;
+    color: inherit;
+    &:hover,
+    &:focus {
+      background-color: $colorBaseWhite;
+      color: $colorBaseBlack;
+    }
+    &:hover {
+      svg * {
+        fill: $colorBaseBlack;
+      }
+    }
+  }
+  &.fullWidth {
+    width: 100%;
+  }
+}
+.radio {
+  -webkit-appearance: none;
+  appearance: none;
+  background-color: transparent;
+  margin: 0;
+  display: none;
+
+  + .button {
+    width: 100%;
+    background: $colorGray800;
+    color: $colorBaseWhite;
+    font-size: 16px;
+  }
+
+  &:checked + .button {
+    background-color: $colorViolet200 !important;
+    color: $colorViolet900;
+
+    b {
+      color: inherit;
+    }
+  }
+}

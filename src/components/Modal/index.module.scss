@@ -1,0 +1,70 @@
+@import "src/assets/variables";
+
+.toggle {
+  display: none;
+  margin: 10px 0 10px;
+}
+
+.backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 100;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  &.hidden {
+    display: none;
+  }
+  &.blur {
+    // backdrop-filter: blur(4px);
+    z-index: 200;
+  }
+  &.blocked {
+    pointer-events: none;
+  }
+}
+
+.popup {
+  background: $colorOptimGray115;
+  border-radius: 12px;
+  width: 600px;
+  max-height: 100vh;
+  overflow-y: auto;
+  position: relative;
+  border: 1px solid $colorShade90;
+  padding: $gap3XL;
+  overflow-x: visible;
+  // overflow-y: visible;
+  &.blur {
+    border: none;
+  }
+  &.inAction {
+    pointer-events: all;
+  }
+  &::-webkit-scrollbar {
+    width: 5px;
+  }
+  &::-webkit-scrollbar-track {
+    box-shadow: inset 0 0 6px $colorBaseBlack;
+  }
+  &::-webkit-scrollbar-thumb {
+    background-color: $colorOptimGray700;
+  }
+}
+
+.close {
+  display: block;
+  position: absolute;
+  top: 26px;
+  right: 16px;
+  cursor: pointer;
+  fill: $colorGray200;
+
+  &:hover,
+  &:focus {
+    fill: $colorBaseWhite;
+  }
+}

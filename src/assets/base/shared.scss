@@ -1,0 +1,40 @@
+@import "src/assets/variables";
+
+.flex {
+  display: flex;
+}
+
+.w-full {
+  width: 100%;
+}
+
+.justify-between {
+  display: flex;
+  justify-content: space-between;
+}
+
+p {
+  margin: 0px;
+}
+
+.relative {
+  position: relative
+}
+
+.cursor {
+  cursor: pointer;
+}
+
+.cardsWrapper {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-column-gap: $gapS;
+
+  @media only screen and (max-width: $breakpointTablet) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  @media only screen and (max-width: $breakpointPhone) {
+    grid-template-columns: repeat(1, 1fr);
+  }
+}

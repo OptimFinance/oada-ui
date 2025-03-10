@@ -1,0 +1,34 @@
+@import "src/assets/variables";
+
+.tabsList {
+  width: 100%;  
+  border-bottom: 1px solid $colorShade90;
+  display: flex;
+}
+
+.tabsItem {
+  cursor: pointer;
+  font-weight: $semiBold;
+  font-size: $fontL;
+  margin-right: 30px;
+}
+
+.tabsLink {
+  padding-bottom: $gapS;
+  display: inline-flex;
+  transition: 0.2s;
+  border-bottom: 2px solid transparent;
+  outline: none;
+}
+
+.tabsLinkActive {
+  padding-bottom: $gapS;
+  display: inline-flex;
+  border-bottom: 2px solid $colorBaseWhite;
+  color: $colorBaseWhite;
+  transition: 0.2s;
+}
+
+.tooltip {
+  margin-left: 5px;
+}

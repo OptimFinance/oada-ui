@@ -1,0 +1,25 @@
+@font-face {
+  font-family: 'Roobert';
+  src: url('./Roobert-Regular.otf');
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'Roobert';
+  src: url('./Roobert-Medium.otf');
+  font-weight: 500;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'Roobert';
+  src: url('./Roobert-SemiBold.otf');
+  font-weight: 600;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Dollar Bill';
+  src: url('./DollarBill.otf');
+  font-weight: normal;
+  font-style: normal;
+}

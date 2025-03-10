@@ -1,0 +1,50 @@
+@import "src/assets/variables";
+@import "src/assets/base/shared.scss";
+
+.wrapper{
+  position: relative;
+}
+.container {
+  width: 280px;
+  height: 60px;
+  background: $gradiantBg4;
+  border: 1px solid $colorShade90;
+  border-radius: 24px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  color: #fff;
+  padding-left: $gapM;
+
+  p {
+    margin-right: $gapXs;
+  }
+  img {
+    margin-right: $gapMxs;
+  }
+}
+.option {
+  position: absolute;
+  background: $colorShade110;
+  border-radius: 12px;
+  padding: 1em;
+  top: 70px;
+  left: 0px;
+  width: 100%;
+  padding: $gapM;
+  ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+
+    li {
+      color: $colorBaseWhite;
+      margin-bottom: $gapMxs;
+      cursor: pointer;
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+  }
+}

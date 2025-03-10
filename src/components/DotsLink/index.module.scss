@@ -1,0 +1,37 @@
+@import "src/assets/variables";
+
+.dotsLink {
+  display: inline-block;
+  position: relative;
+  font-size: $fontS;
+  font-weight: $regular;
+  padding-right: 25px;
+  transition: 0.2s;
+  color: $colorBaseWhite;
+  max-width: 250px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden; 
+  cursor: pointer;
+
+  &.link {
+    &:after {
+      position: absolute;
+      right: 0;
+      top: -3px;
+      content: url('../../assets/icons/link.svg');
+    }
+  }
+
+  &.copy {
+    &:after {
+      position: absolute;
+      right: 4px;
+      content: url("../../assets/icons/copyID.svg");
+    }
+  }
+
+  &:hover {
+    opacity: 0.7;
+  }
+}
