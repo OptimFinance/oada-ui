@@ -1,108 +1,132 @@
+/**
+ * Alert Component Styling
+ * 
+ * SCSS module that defines the styling for the Alert component and its child elements.
+ * Includes styles for alert positioning, different alert types (success/error),
+ * and interactive elements like buttons and links.
+ */
+
+/* Import project variables (colors, spacing, etc.) */
 @import "src/assets/variables";
 
+/* Container that positions alerts in the top-right corner of the viewport */
 .alertWrapper {
-  position: fixed;
-  top: 80px;
-  right: 14px;
-  z-index: 200;
+  position: fixed;        /* Fixed position relative to the viewport */
+  top: 80px;              /* Distance from the top of the viewport */
+  right: 14px;            /* Distance from the right of the viewport */
+  z-index: 200;           /* High z-index to ensure alerts appear over other content */
 }
 
+/* Individual alert box styling */
 .alert {
-  padding: $gapS;
-  border-radius: 20px;
-  background: $colorShade110;
-  width: 376px;
-  border: 1px solid $colorBaseBlack;
-  margin-bottom: $gapL;
-  position: relative;
+  padding: $gapS;         /* Internal spacing using variable */
+  border-radius: 20px;    /* Rounded corners */
+  background: $colorShade110; /* Background color */
+  width: 376px;           /* Fixed width for all alerts */
+  border: 1px solid $colorBaseBlack; /* Border color */
+  margin-bottom: $gapL;   /* Space between stacked alerts */
+  position: relative;     /* Needed for absolute positioning of child elements */
 }
 
+/* Icon container for success/error icons */
 .iconWrapper {
   width: 60px;
   height: 60px;
-  background: $colorShade100;
-  border-radius: 8px;
-  display: flex;
+  background: $colorShade100; /* Background color for the icon container */
+  border-radius: 8px;         /* Slightly rounded corners */
+  display: flex;              /* Center the icon */
   align-items: center;
   justify-content: center;
 
+  /* Success icon styling */
   &.success {
     &:before {
       width: 36px;
       height: 36px;
-      content: "";
-      background: url("../../assets/icons/success-icon.svg");
+      content: "";           /* Empty content for pseudo-element */
+      background: url("../../assets/icons/success-icon.svg"); /* Success checkmark icon */
     }
   }
 
+  /* Error icon styling */
   &.error {
     &:before {
       width: 36px;
       height: 36px;
-      content: "";
-      background: url("../../assets/icons/error-icon.svg");
+      content: "";           /* Empty content for pseudo-element */
+      background: url("../../assets/icons/error-icon.svg"); /* Error X icon */
     }
   }
 }
 
+/* Close (X) button styling */
 .cross {
   width: 40px;
   height: 40px;
-  display: flex;
+  display: flex;              /* Center the X icon */
   align-items: center;
   justify-content: center;
-  position: absolute;
+  position: absolute;         /* Position in the top-right of alert */
   right: 5px;
   top: 5px;
-  cursor: pointer;
+  cursor: pointer;            /* Indicate it's clickable */
 
+  /* X icon using pseudo-element */
   &:before {
     display: inline-block;
-    content: url("../../assets/icons/cross-icon.svg")
+    content: url("../../assets/icons/cross-icon.svg") /* X icon image */
   }
 }
 
+/* Header area of the alert containing icon and title */
 .alertHeader {
-  display: flex;
-  align-items: center;
-  margin-bottom: 10px;
+  display: flex;           /* Horizontal layout for icon and title */
+  align-items: center;     /* Vertically center items */
+  margin-bottom: 10px;     /* Space below header */
 }
 
+/* Alert title text styling */
 .alertTitle {
-  font-size: $fontL;
-  font-weight: $semiBold;
-  margin-left: 13px;
+  font-size: $fontL;       /* Larger font size */
+  font-weight: $semiBold;  /* Semi-bold weight for emphasis */
+  margin-left: 13px;       /* Space between icon and title */
 
+  /* Success message color variation */
   &.green {
-    color: $colorGreen;
+    color: $colorGreen;    /* Green color for success messages */
   }
 
+  /* Error message color variation */
   &.red {
-    color: $colorRed;
+    color: $colorRed;      /* Red color for error messages */
   }
 }
 
+/* Container for action buttons */
 .buttonsWrapper {
-  display: flex;
-  justify-content: flex-end;
+  display: flex;           /* Horizontal layout for buttons */
+  justify-content: flex-end; /* Right-align buttons */
 }
 
+/* Individual button styling */
 .button {
-  width: 120px;
-  margin-left: 10px;
+  width: 120px;            /* Fixed width for consistent button size */
+  margin-left: 10px;       /* Space between buttons */
 }
 
+/* Alert message text styling */
 .message {
-  margin-bottom: 16px;
-  line-height: 1.5;
-  word-wrap: break-word;
+  margin-bottom: 16px;     /* Space below message */
+  line-height: 1.5;        /* Improved readability with increased line height */
+  word-wrap: break-word;   /* Wrap long words/URLs to prevent overflow */
 }
 
+/* Styling for links in alert messages (e.g., transaction links) */
 .alertAnchor {
   &:link {
-    color: $colorLightBlue;
+    color: $colorLightBlue; /* Blue color for links */
   }
   &:hover {
-    text-decoration: underline;
+    text-decoration: underline; /* Underline on hover for better UX */
   }
 }

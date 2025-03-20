@@ -1,18 +1,43 @@
+/**
+ * FAQ Card Styles
+ * 
+ * Defines the styling for FAQ information cards that appear in the FAQ section.
+ * These cards provide visual emphasis for important information or calls-to-action
+ * using a gradient background and centered content layout.
+ * 
+ * Design Features:
+ * - Gradient background using the system's fourth gradient preset
+ * - Soft rounded corners for modern appearance
+ * - Centered content layout
+ * - Consistent spacing for content elements
+ * - Fixed image dimensions for visual consistency
+ */
+
 @import "src/assets/variables";
 
-.container{
+// Main card container
+// Uses flexbox for centered content layout and gradient background
+.container {
+  // Card structure
   border-radius: 12px;
+  padding: 44px 0;
+  
+  // Flexbox layout for vertical centering
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  background-image: $gradiantBg4;
-  padding: 44px 0;
+  
+  // Visual styling
+  background-image: $gradiantBg4;  // Uses system gradient preset
 
-  p{
+  // Typography settings for card text
+  p {
     font-size: 20px;
   }
 
+  // Fixed dimensions for card images
+  // Ensures consistent visual presentation
   .image {
     width: 100px;
     height: 100px;

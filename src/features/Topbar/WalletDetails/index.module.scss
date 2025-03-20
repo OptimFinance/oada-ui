@@ -1,100 +1,154 @@
+/**
+ * Wallet Details Component Styles
+ *
+ * Defines the visual presentation for the wallet details dropdown component.
+ * Features a dark theme design with hover effects, address truncation,
+ * and organized sections for wallet information and actions.
+ */
 
 @import "src/assets/variables";
 
+/* Layout Container
+-------------------------------------------------- */
 .walletDetailsWrapper {
-  position: relative;
+  position: relative;  // For dropdown positioning
 }
 
+/* Dropdown Container
+-------------------------------------------------- */
 .container {
+  // Positioning
+  position: absolute;
+  top: 50px;
+  right: 10px;
+
+  // Layout
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+
+  // Visual styling
   background: $colorShade110;
   border-radius: 20px;
   padding: $gapS;
   margin: 0;
-  position: absolute;
-  top: 50px;
-  right: 10px;
-  display: flex;
-  flex-direction: column;
-  gap: 1em;
 }
 
+/* Wallet Title Section
+-------------------------------------------------- */
 .title {
   display: flex;
   align-items: center;
+
   .logo {
     margin-right: 10px;
     height: 20px;
+
     svg {
       width: 20px;
       height: 20px;
     }
   }
 }
+
+/* Address Display
+-------------------------------------------------- */
 .address {
   width: 100%;
+
   .value {
+    // Text truncation for long addresses
     display: inline-block;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
   }
+
   .icon {
     margin-right: 6px;
   }
 }
+
+/* Action Buttons Grid
+-------------------------------------------------- */
 .buttons {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 10px;
+
   .icon {
     margin-right: 6px;
   }
 }
+
+/* Box Container Style
+-------------------------------------------------- */
 .box {
   border: 1px solid $colorGray600;
   border-radius: 8px;
   padding: 5px 10px;
 }
+
+/* Wallet List Table
+-------------------------------------------------- */
 .wallets {
   width: 100%;
   color: $colorGray200;
+
   td {
     padding: 5px 0;
     vertical-align: middle;
-    &:last-of-type{
+
+    // Right-aligned values with different color
+    &:last-of-type {
       text-align: right;
       color: $colorBaseWhite;
     }
   }
+
   .icon {
     vertical-align: middle;
     margin-right: 10px;
   }
 }
+
+/* Disconnect Button
+-------------------------------------------------- */
 .disconnect {
   .icon {
     margin-right: 6px;
   }
 }
 
+/* Wallet Details Button
+-------------------------------------------------- */
 .walletDetailsButton {
+  // Layout and dimensions
   height: 40px;
   padding: $gapMxs;
+  max-width: 180px;
+  margin-right: 6px;
+
+  // Flexbox alignment
   display: flex;
   justify-content: center;
   align-items: center;
-  border-radius: 20px;
+
+  // Visual styling
   background: $colorShade110;
-  transition: 0.2s;
+  border-radius: 20px;
   border: 1px solid $colorShade110;
-  position: relative;
-  max-width: 180px;
-  overflow: hidden;
-  font-weight: $regular;
-  font-size: $fontS;
-  margin-right: 6px;
   cursor: pointer;
 
+  // Typography
+  font-weight: $regular;
+  font-size: $fontS;
+
+  // Text overflow handling
+  overflow: hidden;
+
+  // Interactive states
+  transition: 0.2s;
   &:hover {
     border-color: $colorBaseWhite;
   }
@@ -104,18 +158,24 @@
   }
 }
 
+/* Amount Display
+-------------------------------------------------- */
 .detailsAmount {
   color: $colorOptimGray200;
   word-wrap: none;
   white-space: nowrap;
 
+  // Separator after amount
   &:after {
     content: '|';
     padding: 0 $gapMxs;
   }
 }
 
+/* Address Display
+-------------------------------------------------- */
 .detailsAddress {
+  // Text truncation for long addresses
   max-width: 100px;
   text-overflow: ellipsis;
   overflow: hidden;

@@ -1,3 +1,15 @@
+/**
+ * Utility Module
+ * 
+ * This module provides various utility functions and type definitions:
+ * - Cardano-specific type conversions and validations
+ * - Asset and UTxO handling
+ * - Address and credential management
+ * - Formatting functions for numbers and currencies
+ * - Array manipulation utilities
+ * - Response handling and error management
+ */
+
 import {C} from "lucid-cardano";
 import {bech32ToCoreAddress} from "./utils/lucid";
 import {Result} from "./utils/result";
@@ -13,10 +25,25 @@ import {useLocation} from "react-router-dom"
 import {AlertState} from "./store/slices/alertSlice"
 import {VerifiedName, VerifiedNameMap} from "./types/ui"
 
+/**
+ * Asset Collection Type
+ * 
+ * Represents a collection of assets with their quantities
+ * Format: { "assetClass": bigint }
+ */
 export type Assets = {
   [assetClass: string]: bigint
 }
 
+/**
+ * UTxO Type
+ * 
+ * Represents an unspent transaction output with:
+ * - Transaction ID and index
+ * - Destination address
+ * - Associated assets
+ * - Optional datum hash
+ */
 export type Utxo = {
   txId: string,
   txIx: number,
@@ -25,12 +52,34 @@ export type Utxo = {
   datumHash?: string,
 }
 
-// yet another address type
+/**
+ * Address Type
+ * 
+ * Represents a Cardano address with:
+ * - Bech32 encoded string
+ * - Payment credential
+ * - Optional stake credential
+ */
 export type Address = { bech32: string, paymentCredential: PaymentCredential, stakeCredential?: StakeCredential }
 
+/**
+ * Payment Credential Types
+ * 
+ * Represents different types of payment credentials:
+ * - KeyHash: Public key hash
+ * - ScriptHash: Script hash
+ */
 export type PaymentCredential = KeyHash | ScriptHash
 export type KeyHash = { kind: 'KeyHash',  hash: string }
 export type ScriptHash = { kind: 'ScriptHash', hash: string}
+
+/**
+ * Stake Credential Types
+ * 
+ * Represents different types of stake credentials:
+ * - PaymentCredential: Key or script hash
+ * - StakePointer: Pointer to stake registration
+ */
 export type StakeCredential = PaymentCredential | StakePointer
 export type StakePointer = { 
   kind: 'StakePointer',
@@ -39,9 +88,14 @@ export type StakePointer = {
   dcertIndex: bigint
 }
 
-
 const {BaseAddress, EnterpriseAddress, PointerAddress } = C;
 
+/**
+ * Converts Lucid Assets to Store Assets
+ * 
+ * @param lucidAssets - Lucid Assets object to convert
+ * @returns Store Assets object
+ */
 const lucidAssetsToAssets = (lucidAssets: Lucid.Assets): St.Assets => {
   const assets: St.Assets = {}
   for (const [unit, quantity] of Object.entries(lucidAssets)) {
@@ -50,6 +104,12 @@ const lucidAssetsToAssets = (lucidAssets: Lucid.Assets): St.Assets => {
   return assets
 }
 
+/**
+ * Converts Lucid UTxO to Store UTxO
+ * 
+ * @param lucidUtxo - Lucid UTxO to convert
+ * @returns Store UTxO object
+ */
 export const lucidUtxoToUtxo = (lucidUtxo: Lucid.UTxO): St.Utxo => {
   return {
     txId: lucidUtxo.txHash,
@@ -60,6 +120,12 @@ export const lucidUtxoToUtxo = (lucidUtxo: Lucid.UTxO): St.Utxo => {
   }
 }
 
+/**
+ * Converts Storable Credential to Payment Credential
+ * 
+ * @param credential - Storable credential to convert
+ * @returns Payment credential
+ */
 export const storableCredentialToPaymentCredential = (
   credential: St.Credential
 ): PaymentCredential => {
@@ -74,6 +140,12 @@ export const storableCredentialToPaymentCredential = (
       };
 };
 
+/**
+ * Converts Payment Credential to Storable Credential
+ * 
+ * @param paymentCredential - Payment credential to convert
+ * @returns Storable credential
+ */
 export const paymentCredentialToStorableCredential = (
   paymentCredential: PaymentCredential
 ): St.Credential => {
@@ -88,6 +160,11 @@ export const paymentCredentialToStorableCredential = (
       };
 };
 
+/**
+ * Basic Response Types
+ * 
+ * Represents a generic response with success or failure
+ */
 export type BasicResponse<A> = OkResponse<A> | FailResponse
 
 export type OkResponse<A> = {
@@ -100,6 +177,12 @@ export type FailResponse = {
   contents: string
 }
 
+/**
+ * Type guard for BasicResponse
+ * 
+ * @param contentsTypeGuard - Type guard for response contents
+ * @returns Type guard for BasicResponse
+ */
 export const isBasicResponse = <T>(contentsTypeGuard: (o: any) => o is T) => (o: any): o is BasicResponse<T> => {
   console.log('isBasicResponse')
   console.log(o)
@@ -108,12 +191,30 @@ export const isBasicResponse = <T>(contentsTypeGuard: (o: any) => o is T) => (o:
     && contentsTypeGuard(o.contents)
 }
 
+/**
+ * Type guard for number
+ * 
+ * @param n - Value to check
+ * @returns True if value is a number
+ */
 export const isNumber = (n: any): n is number => {
   return typeof n === 'number'
 }
 
+/**
+ * Flattens an array of arrays
+ * 
+ * @param arrayOfArrays - Array of arrays to flatten
+ * @returns Flattened array
+ */
 export const flatten = <T>(arrayOfArrays: T[][]): T[] => ([] as T[]).concat(...arrayOfArrays)
 
+/**
+ * Converts BasicResponse to AlertState
+ * 
+ * @param response - BasicResponse to convert
+ * @returns AlertState object
+ */
 export const basicResponseToAlert = (response: BasicResponse<string> | undefined): AlertState => {
   const alert: AlertState = {
     message: 'Response is undefined'
@@ -138,12 +239,27 @@ export const basicResponseToAlert = (response: BasicResponse<string> | undefined
   }
 }
 
-
+/**
+ * Converts token name to verified name
+ * 
+ * @param verifiedNameMap - Map of verified names
+ * @param tokenName - Token name to convert
+ * @param poolSize - Pool size for verification
+ * @returns Verified name or original token name
+ */
 export const tokenNameToVerifiedName = (verifiedNameMap: VerifiedNameMap) => (tokenName: string, poolSize: Big): string => {
   const verifiedName = getVerifiedName(verifiedNameMap, tokenName, poolSize)
   return verifiedName === null ? tokenName : verifiedName.name
 }
 
+/**
+ * Gets verified name from map
+ * 
+ * @param verifiedNameMap - Map of verified names
+ * @param tokenName - Token name to look up
+ * @param size - Size for verification
+ * @returns Verified name or null
+ */
 export const getVerifiedName = (verifiedNameMap: VerifiedNameMap, tokenName: string, size: Big): VerifiedName | null => {
   const verifiedName = verifiedNameMap[tokenName]
   return verifiedName === undefined
@@ -151,11 +267,22 @@ export const getVerifiedName = (verifiedNameMap: VerifiedNameMap, tokenName: str
   : verifiedName[size.toString()]
 }
 
-
+/**
+ * Copies text to clipboard
+ * 
+ * @param value - Text to copy
+ */
 export const copyToClipboard = (value: string) => {
   navigator.clipboard.writeText(value);
 }
 
+/**
+ * Intersperses a separator between array elements
+ * 
+ * @param s - Separator string
+ * @param strings - Array of strings
+ * @returns Joined string with separator
+ */
 export const intersperse = (s: string) => (strings: string[]): string => {
   if (strings.length === 0) return ''
   else if (strings.length === 1) return strings[0]
@@ -169,6 +296,13 @@ export const intersperse = (s: string) => (strings: string[]): string => {
   }
 }
 
+/**
+ * Splits array into chunks
+ * 
+ * @param arr - Array to split
+ * @param size - Size of each chunk
+ * @returns Array of chunks
+ */
 export const chunk = <A>(arr: A[], size: number): A[][] => {
    const chunkedArray = [];
    for (let i = 0; i < arr.length; i++) {
@@ -182,12 +316,23 @@ export const chunk = <A>(arr: A[], size: number): A[][] => {
    return chunkedArray;
 };
 
+/**
+ * React hook for URL query parameters
+ * 
+ * @returns URLSearchParams object
+ */
 export function useQuery() {
   const { search } = useLocation();
-
   return React.useMemo(() => new URLSearchParams(search), [search]);
 }
 
+/**
+ * Zips two arrays together
+ * 
+ * @param array1 - First array
+ * @param array2 - Second array
+ * @returns Array of tuples
+ */
 export const zip = <A, B>(array1: A[], array2: B[]): (readonly [A, B])[] => {
   const l = array1.length > array2.length ? array2.length : array1.length
   const result = []
@@ -197,6 +342,13 @@ export const zip = <A, B>(array1: A[], array2: B[]): (readonly [A, B])[] => {
   return result
 }
 
+/**
+ * Resizes SVG element
+ * 
+ * @param width - New width
+ * @param height - New height
+ * @param svg - SVG element to resize
+ */
 export const resize = (width: number, height: number) => (svg: SVGSVGElement) => {
   svg.setAttribute('style', `height: ${height}px; width: ${width}px`)
   const rect = svg.querySelector('rect')
@@ -205,12 +357,29 @@ export const resize = (width: number, height: number) => (svg: SVGSVGElement) =>
   }
 }
 
+/**
+ * Math utility functions
+ */
 export const min = (a: Big, b: Big) => a.lt(b) ? a : b
 export const max = (a: Big, b: Big) => a.gt(b) ? a : b
 
+/**
+ * Creates array of numbers in range
+ * 
+ * @param start - Start value
+ * @param stop - Stop value
+ * @param step - Step value
+ * @returns Array of numbers
+ */
 export const range = (start: number, stop: number, step: number): number[] =>
   Array.from({ length: (stop - start) / step + 1 }, (_, i) => start + i * step);
 
+/**
+ * Converts store UTxO reference to server UTxO reference
+ * 
+ * @param utxoRef - Store UTxO reference
+ * @returns Server UTxO reference
+ */
 export function storeToUtxoRef(utxoRef: St.UtxoRef): S.UtxoRef {
   return {
     ...utxoRef,
@@ -219,21 +388,42 @@ export function storeToUtxoRef(utxoRef: St.UtxoRef): S.UtxoRef {
 }
 
 /**
- * The idea behind this module is a translation layer between types from
- * the outside (e.g Blockfrost, Lucid) to our domain types (e.g. Address, 
- * BondUtxo)
- *
- * Not as necessary any more as most blockfrost was replaced (except for)
- * Verify Bond which can also be replaced easily now.
+ * Core Address Types
+ * 
+ * Represents different types of Cardano addresses:
+ * - BaseAddress: Address with both payment and stake credentials
+ * - EnterpriseAddress: Address with only payment credential
+ * - PointerAddress: Address with payment credential and stake pointer
  */
 export type CoreAddress = C.BaseAddress | C.EnterpriseAddress | C.PointerAddress
 
+/**
+ * Error Types for Address Conversion
+ */
 class NoPaymentCredentialError extends Error {
   constructor(public name: 'NoPaymentCredentialError' = 'NoPaymentCredentialError') {
     super()
   }
 }
 
+class AddressIsNotBaseOrPointerError extends Error {
+  constructor(public name: 'AddressIsNotBaseOrPointerError' = 'AddressIsNotBaseOrPointerError') {
+    super()
+  }
+}
+
+class Bech32IsNotAddressError extends Error {
+  constructor(public error?: Error, public name: 'Bech32IsNotAddressError' = 'Bech32IsNotAddressError') {
+    super(error !== undefined ? error.message : '')
+  }
+}
+
+/**
+ * Converts core stake credential to payment credential
+ * 
+ * @param coreStakeCredential - Core stake credential
+ * @returns Result with payment credential or error
+ */
 const coreStakeCredentialToPaymentCredential = (coreStakeCredential: C.StakeCredential): Result<PaymentCredential, NoPaymentCredentialError> => {
   const keyHash = coreStakeCredential.to_keyhash()
   if (keyHash === undefined) {
@@ -248,6 +438,12 @@ const coreStakeCredentialToPaymentCredential = (coreStakeCredential: C.StakeCred
   }
 }
 
+/**
+ * Converts core address to payment credential
+ * 
+ * @param coreAddress - Core address
+ * @returns Result with payment credential or error
+ */
 const coreAddressToPaymentCredential = (coreAddress: CoreAddress): Result<PaymentCredential, NoPaymentCredentialError> => {
   if (coreAddress instanceof BaseAddress || coreAddress instanceof PointerAddress || coreAddress instanceof EnterpriseAddress) {
     const coreStakeCredential = coreAddress.payment_cred()
@@ -257,16 +453,16 @@ const coreAddressToPaymentCredential = (coreAddress: CoreAddress): Result<Paymen
   }
 }
 
-class AddressIsNotBaseOrPointerError extends Error {
-  constructor(public name: 'AddressIsNotBaseOrPointerError' = 'AddressIsNotBaseOrPointerError') {
-    super()
-  }
-}
 type AddressHasNoStakeCredentialError =
   | NoPaymentCredentialError
   | AddressIsNotBaseOrPointerError
 
-
+/**
+ * Converts core address to stake credential
+ * 
+ * @param coreAddress - Core address
+ * @returns Result with stake credential or error
+ */
 const coreAddressToStakeCredential = (coreAddress: CoreAddress): Result<StakeCredential, AddressHasNoStakeCredentialError> => {
   if (coreAddress instanceof BaseAddress) {
     const coreStakeCredential = coreAddress.stake_cred()
@@ -284,17 +480,17 @@ const coreAddressToStakeCredential = (coreAddress: CoreAddress): Result<StakeCre
   }
 }
 
-class Bech32IsNotAddressError extends Error {
-  constructor(public error?: Error, public name: 'Bech32IsNotAddressError' = 'Bech32IsNotAddressError') {
-    super(error !== undefined ? error.message : '')
-  }
-}
 type Bech32ToAddressError =
   | Bech32IsNotAddressError
   | NoPaymentCredentialError
   | AddressHasNoStakeCredentialError
 
-// doesn't handle byron or reward addresses
+/**
+ * Converts bech32 string to Address
+ * 
+ * @param bech32 - Bech32 encoded string
+ * @returns Result with Address or error
+ */
 export const bech32ToAddress = (bech32: string): Result<Address, Bech32ToAddressError> => {
   return bech32ToCoreAddress(bech32)
     .chain('coreAddress', a => a)
@@ -314,6 +510,12 @@ export const bech32ToAddress = (bech32: string): Result<Address, Bech32ToAddress
     })
 }
 
+/**
+ * Converts server value to store value
+ * 
+ * @param sv - Server value
+ * @returns Store value
+ */
 export function serverToValue(sv: S.Value): St.Value {
   const assets: St.Assets = {}
   for (const [k, v] of Object.entries(sv.assets)) {
@@ -324,22 +526,41 @@ export function serverToValue(sv: S.Value): St.Value {
     assets: assets
   }
 }
+
+/**
+ * Converts server UTxO reference to store UTxO reference
+ * 
+ * @param sur - Server UTxO reference
+ * @returns Store UTxO reference
+ */
 export function serverToUtxoRef(sur: S.UtxoRef): St.UtxoRef {
   return {
     ...sur,
     outputIndex: sur.outputIndex.toString()
   }
 }
+
+/**
+ * Formatting Functions for ADA and Values
+ */
 const adaSymbol = "₳";
 
+/**
+ * Converts lovelace to ADA
+ * 
+ * @param lovelace - Amount in lovelace
+ * @returns Amount in ADA
+ */
 export function lovelaceToAda(lovelace: Big): Big {
   return lovelace.div(Big(1_000_000));
 }
 
-export const isNullOrErr = <E>(o: any): o is null | Err<E> => {
-  return o === null || o.tag === "Err";
-};
-
+/**
+ * Formats lovelace amount as human-readable words
+ * 
+ * @param lovelace - Amount in lovelace
+ * @returns Formatted string
+ */
 export const formatLovelaceAsWords = (lovelace: Big): string => {
   const lovelaceAsWords = lovelace.eq("1000000000000")
     ? "1 Million ADA"
@@ -351,10 +572,22 @@ export const formatLovelaceAsWords = (lovelace: Big): string => {
   return lovelaceAsWords;
 };
 
+/**
+ * Formats decimal as percentage
+ * 
+ * @param interestRate - Decimal rate
+ * @returns Formatted percentage string
+ */
 export const formatDecimalAsPercent = (interestRate: Big): string => {
   return interestRate.mul(100).round(2, Big.roundHalfEven).toString() + "%";
 };
 
+/**
+ * Formats rate as percentage with ADA symbol
+ * 
+ * @param rate - Rate to format
+ * @returns Formatted string
+ */
 export const formatRateAsPercentAda = (rate: Big): string => {
   return `${rate
     .mul(100)
@@ -362,6 +595,19 @@ export const formatRateAsPercentAda = (rate: Big): string => {
     .toString()}% ${adaSymbol}`;
 };
 
+/**
+ * Type guard for null or error
+ * 
+ * @param o - Value to check
+ * @returns True if value is null or error
+ */
+export const isNullOrErr = <E>(o: any): o is null | Err<E> => {
+  return o === null || o.tag === "Err";
+};
+
+/**
+ * Formatting Functions
+ */
 export const formatAmount = (amount: Big): string => {
   return amount.toLocaleString();
 };
@@ -378,9 +624,11 @@ export const formatEpochsAsMonths = (epochs: Big | null): string => {
     ? "N/A"
     : formatMonths(epochs.div(6).round(0, Big.roundDown));
 };
+
 const formatMonths = (months: Big): string => {
   return months.toString() + " month" + (months.gt(Big(1)) ? "s" : "");
 };
+
 export const formatValue = (currentValueAsLovelace: Big): string => {
   const oneMillionAda = Big(1_000_000_000_000);
   const tenThousandAda = Big(10_000_000_000);
@@ -403,6 +651,7 @@ export const formatValue = (currentValueAsLovelace: Big): string => {
       " " +
       adaSymbol;
 };
+
 export const formatLovelaceAsAda = (lovelace: Big, adaSymbol: string): string => {
     const oneAda = Big(1_000_000);
     const tenThousandAda = Big(10_000).mul(oneAda)
@@ -415,13 +664,13 @@ export const formatLovelaceAsAda = (lovelace: Big, adaSymbol: string): string =>
       : `${lovelace.div(oneAda).round(2, Big.roundDown).toString()} ${adaSymbol}`
 }
 
-
 export const formatAmountRatio = (
   numerator: Big,
   denominator: Big
 ): [string, string] => {
   return [formatAmount(numerator), formatAmount(denominator)];
 };
+
 export const formatValueRatio = (
   numeratorAsLovelace: Big,
   denominatorAsLovelace: Big
@@ -463,7 +712,14 @@ export const formatValueRatio = (
 
 const epochsPerMonth = Big(6);
 
-// rounds down to the nearest whole amount
+/**
+ * Formats amount as months
+ * 
+ * @param amount - Amount to format
+ * @param capitalize - Whether to capitalize month
+ * @param shorten - Whether to shorten month
+ * @returns Formatted string
+ */
 export const formatAsMonths = (
   amount: number | Big | null,
   capitalize?: boolean,
@@ -488,8 +744,12 @@ export const formatAsMonths = (
     : `${epochsAsBig.toString()}/6 ${m}${body}s`;
 };
 
-
-
+/**
+ * Type guard for filtering arrays
+ * 
+ * @param predicate - Type guard predicate
+ * @returns Filtered array
+ */
 export const filter =
   <B>(predicate: (a: any) => a is B) =>
   (as: any[]): B[] => {
@@ -500,7 +760,12 @@ export const filter =
     return bs;
   };
 
-// aka bech32 address to reward address
+/**
+ * Converts address to stake address
+ * 
+ * @param bech32 - Bech32 encoded address
+ * @returns Stake address or null
+ */
 export const addressToStakeAddress = (bech32: string): string | null => {
   const stakeAddress = bech32ToAddress(bech32).match({
     Success: (enrichedAddress: any) => {
@@ -517,10 +782,12 @@ export const addressToStakeAddress = (bech32: string): string | null => {
   return stakeAddress;
 };
 
-// the relative epoch starts at 0 so the actual epoch adds 1 to the
-// epoch boundary to get the absolute epoch
-// used for the bondchart which current takes numbers which is why
-// we use numbers instead of Big
+/**
+ * Converts relative epoch to absolute epoch
+ * 
+ * @param relativeEpoch - Relative epoch number
+ * @returns Absolute epoch number
+ */
 export const relativeEpochToAbsoluteEpoch = (relativeEpoch: number): number => {
   return network.epochBoundaryAsEpoch + relativeEpoch + 1;
 };

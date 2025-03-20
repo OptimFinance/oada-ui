@@ -1,37 +1,51 @@
+/**
+ * Attention Component Styling
+ * 
+ * SCSS module that defines the styling for the Attention component - an alert/notification
+ * component to highlight important information to users.
+ * Includes styles for default warning state and error state variation.
+ */
+
+/* Import project variables (colors, spacing, etc.) */
 @import "src/assets/variables";
 
+/* Main alert styling */
 .alert {
-  padding: $gapS $gapS $gapS $gap4XL;
-  border-radius: 30px;
-  line-height: 20px;
-  color: $colorWarning;
-  background-color: $bgColorWarning;
-  font-size: $fontS;
-  font-weight: $regular;
-  gap: $gapS;
-  margin: 40px 0px;
-  position: relative;
+  padding: $gapS $gapS $gapS $gap4XL; /* Asymmetric padding with extra space on left for icon */
+  border-radius: 30px;                /* Highly rounded corners for alert style */
+  line-height: 20px;                  /* Consistent line height for text */
+  color: $colorWarning;               /* Warning text color (default state) */
+  background-color: $bgColorWarning;  /* Light warning background for contrast */
+  font-size: $fontS;                  /* Slightly smaller font size */
+  font-weight: $regular;              /* Regular font weight for readability */
+  gap: $gapS;                         /* Spacing between elements */
+  margin: 40px 0px;                   /* Vertical margin to separate from other content */
+  position: relative;                 /* Needed for absolute positioning of icon */
 
+  /* Warning icon using pseudo-element (default state) */
   &:before {
     display: inline-block;
-    position: absolute;
-    left: 16px;
-    top: 16px;
-    content: url("../../assets/icons/li_alert-circle.svg");
+    position: absolute;               /* Position icon independently */
+    left: 16px;                       /* Left position for icon */
+    top: 16px;                        /* Top position for icon */
+    content: url("../../assets/icons/li_alert-circle.svg"); /* Warning icon image */
   }
 
+  /* Error/danger variation */
   &.red {
+    /* Error icon styling - replaces the default warning icon */
     &:before {
       display: inline-block;
       position: absolute;
-      width: 20px;
-      height: 20px;
-      content: "";
-      background: url("../../assets/icons/error-icon.svg");
-      background-size: 100%;
-      left: 16px;
-      top: 16px;
+      width: 20px;                    /* Fixed width for icon */
+      height: 20px;                   /* Fixed height for icon */
+      content: "";                    /* Empty content for background image approach */
+      background: url("../../assets/icons/error-icon.svg"); /* Error icon image */
+      background-size: 100%;          /* Scale icon to fit container */
+      left: 16px;                     /* Left position for icon */
+      top: 16px;                      /* Top position for icon */
     }
-    color: $colorError700;
+    color: $colorError700;            /* Error text color for error state */
+    /* Note: Background color uses the default - could be enhanced with error-specific background */
   }
 }

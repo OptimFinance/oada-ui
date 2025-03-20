@@ -1,42 +1,63 @@
+/**
+ * InputBox Component Styling
+ * 
+ * SCSS module for the InputBox component - a form input field with label and error state support.
+ * Features controlled styling for different states (default, hover, focus, error)
+ * and consistent styling that matches the application's design system.
+ */
+
+/* Import base shared styles and variables */
 @import "../../assets/base/shared.scss";
 @import "src/assets/variables";
 
+/* Main container for the input field, label, and error message */
 .container {
-  width: 100%;
+  width: 100%;                    /* Take full width of parent */
 
+  /* Input field styling */
   .input {
-    outline: none;
-    border: none;
-    border-radius: 14px;
-    padding: $gapM $gapLL;
-    width: 100%;
-    height: 42px;
-    margin-top: 8px;
-    color: white;
-    background: $colorShade110;
+    outline: none;                /* Remove default browser outline */
+    border: none;                 /* Remove default border */
+    border-radius: 14px;          /* Rounded corners */
+    padding: $gapM $gapLL;        /* Padding (vertical, horizontal) */
+    width: 100%;                  /* Full width input */
+    height: 42px;                 /* Fixed height */
+    margin-top: 8px;              /* Space below the label */
+    color: white;               /* Text color */
+    background: $colorShade110;   /* Dark background */
 
+    /* Placeholder text color */
     &::placeholder {
-      color: $colorGray200;
+      color: $colorGray200;       /* Lighter gray for placeholder */
     }
+    
+    /* Hover state */
     &:hover {
-      background: $colorShade100;
+      background: $colorShade100; /* Slightly lighter background on hover */
     }
+    
+    /* Focus state */
     &:focus {
-      border: 1px solid $colorGray300;
+      border: 1px solid $colorGray300; /* Add border when focused */
     }
   }
+  
+  /* Error state styling for input */
   .errorInput {
-    border: 1px solid $colorError600;
+    border: 1px solid $colorError600; /* Red border for error state */
   }
 
+  /* Label styling */
   .label {
-    color: $colorGray200;
-    padding: 0;
-    margin: 0 !important;
-    font-size: 14px;
+    color: $colorGray200;         /* Muted gray color */
+    padding: 0;                   /* No padding */
+    margin: 0 !important;         /* Remove any margin (important to override potential conflicts) */
+    font-size: 14px;              /* Smaller font size */
   }
+  
+  /* Error message styling */
   .errorText {
-    color: $colorError600;
-    margin-top: $gapMxs;
+    color: $colorError600;        /* Red text for error messages */
+    margin-top: $gapMxs;          /* Small space above error message */
   }
 }

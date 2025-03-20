@@ -1,9 +1,29 @@
+/**
+ * Main Stylesheet
+ * 
+ * This is the primary stylesheet that:
+ * - Imports and configures Tailwind CSS
+ * - Defines typography scale and styles
+ * - Sets up custom utilities and gradients
+ * - Configures global styles and scrollbar
+ */
+
+/* Import Tailwind CSS layers */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+/* Import Geist font family */
 @import url("non.geist");
 
+/**
+ * Base Layer Configuration
+ * 
+ * Defines base styles for:
+ * - Body background
+ * - Typography scale (h1-h6)
+ * - Font sizes and line heights
+ */
 @layer base {
   body {
     @apply bg-ui-base-background;
@@ -28,6 +48,11 @@
   }
 }
 
+/**
+ * Global Styles
+ * 
+ * Sets up base font family and max-width constraints
+ */
 body {
   font-family: "Geist Variable";
 }
@@ -36,6 +61,13 @@ body {
   max-width: 98vw;
 }
 
+/**
+ * Custom Utilities
+ * 
+ * Defines custom utility classes for:
+ * - Card gradient background
+ * - Primary gradient background
+ */
 @layer utilities {
   .card-gradient {
     @apply bg-[radial-gradient(107.29%_72.19%_at_3.74%_100%,_#15262e59_0%,_#1A1A25_100%)];
@@ -45,6 +77,12 @@ body {
   }
 }
 
+/**
+ * Scrollbar Configuration
+ * 
+ * Hides scrollbar while maintaining scroll functionality
+ * Applies to WebKit browsers (Chrome, Safari, etc.)
+ */
 /* width */
 ::-webkit-scrollbar {
   width: 0px;

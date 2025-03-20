@@ -1,3 +1,16 @@
+/**
+ * Store Hooks and Blockchain Provider Implementation
+ * 
+ * This module provides:
+ * 1. Typed Redux hooks for safe state management
+ * 2. Custom interval hooks for managing recurring operations
+ * 3. Blockchain provider implementation for Cardano network interaction
+ * 4. Extended transaction completion functionality
+ * 
+ * The module implements a custom blockchain provider that combines Blockfrost
+ * functionality with custom protocol parameter handling for the OADA network.
+ */
+
 import {createAsyncThunk} from '@reduxjs/toolkit';
 import {cardanoNetwork, optimServerUrl} from '../config.local';
 import {C, Lucid, Blockfrost as LucidBlockfrost, Tx, Address, OutputData, UTxO, TxComplete, fromHex, RewardAddress, networkToId, utxoToCore} from 'lucid-cardano';
@@ -7,13 +20,32 @@ import {useEffect, useLayoutEffect, useRef} from 'react';
 import * as L from 'lucid-cardano';
 import { LucidExt } from '../lucid-ext';
 
-
-// Use throughout your app instead of plain `useDispatch` and `useSelector`
+/**
+ * Typed dispatch hook for Redux actions
+ * Use throughout the app instead of plain useDispatch
+ */
 export const useAppDispatch = () => useDispatch<AppDispatch>();
+
+/**
+ * Typed selector hook for Redux state
+ * Use throughout the app instead of plain useSelector
+ */
 export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
 
-// no dependencies on the callback because we only want to cleanup
-// intervals on component unmount
+/**
+ * Custom interval hook that handles cleanup on component unmount
+ * 
+ * @param name - Identifier for the interval (used in logging)
+ * @param callback - Function to execute on each interval
+ * @param delay - Interval delay in milliseconds
+ * @param deps - Optional dependency array for callback updates
+ * 
+ * Features:
+ * - Automatic cleanup on unmount
+ * - Initial execution on mount
+ * - Proper handling of React.StrictMode
+ * - Dependency-based callback updates
+ */
 export function useInterval(name: string, callback: any, delay: number, deps?: any[]) {
   const savedCallback = useRef(callback)
   useEffect(() => {
@@ -41,13 +73,21 @@ export function useInterval(name: string, callback: any, delay: number, deps?: a
   }, [delay]);
 }
 
+/**
+ * Layout-effect version of useInterval
+ * Similar to useInterval but uses useLayoutEffect for synchronous updates
+ * 
+ * @param name - Identifier for the interval
+ * @param callback - Function to execute on each interval
+ * @param delay - Interval delay in milliseconds
+ * @param deps - Optional dependency array for callback updates
+ */
 export function useLayoutInterval(name: string, callback: any, delay: number, deps?: any[]) {
   const savedCallback = useRef(callback)
   useLayoutEffect(() => {
     savedCallback.current = callback;
   }, deps ? deps : []);
 
-  // runs twice because of React.StrictMode
   useLayoutEffect(() => {
     savedCallback.current();
   }, deps ? deps : [])
@@ -59,7 +99,6 @@ export function useLayoutInterval(name: string, callback: any, delay: number, de
     if (delay !== null) {
       const id = setInterval(tick, delay);
       console.log('setInterval: ' + name + " " + id)
-      // this is run after next render, before the next useEffect (any useEffect)
       return () => {
         clearInterval(id);
         console.log('clearInterval: ' + name + " " + id)
@@ -68,10 +107,22 @@ export function useLayoutInterval(name: string, callback: any, delay: number, de
   }, [delay, name]);
 }
 
+/**
+ * Helper function to create typed async thunks
+ * Provides proper typing for parameters and return values
+ */
 export const createAsyncThunkk = <P, R = string>(name: string, callback: (params: P, thunkAPI: ThunkAPI) => Promise<R>) =>
   createAsyncThunk<R, P, GetThunkAPIConfig<ThunkAPI>>(name, callback);
 
-// delegates to blockfrost except for protocol params
+/**
+ * Custom blockchain provider implementation
+ * Extends Blockfrost functionality with custom protocol parameter handling
+ * 
+ * Features:
+ * - Custom protocol parameter fetching from OADA network
+ * - Delegation to Blockfrost for standard operations
+ * - CIP-30 compliant implementation
+ */
 class BlockchainProvider implements L.Provider {
   blockfrost: LucidBlockfrost
 
@@ -79,6 +130,13 @@ class BlockchainProvider implements L.Provider {
     this.blockfrost = new LucidBlockfrost(blockfrostEndpoint, blockfrostKey)
   }
 
+  /**
+   * Fetches protocol parameters from the OADA network
+   * Handles conversion of Ogmios format to Lucid format
+   * 
+   * @returns Promise resolving to protocol parameters
+   * @throws Error if parameters cannot be fetched
+   */
   async getProtocolParameters(): Promise<L.ProtocolParameters> {
     const requestOptions = {
       method: "GET",
@@ -86,7 +144,6 @@ class BlockchainProvider implements L.Provider {
         "Accept": "application/json",
         "Content-Type": "application/json;charset=UTF-8",
       },
-      // body: Json.stringify(signedTxRequest),
     }
     const httpResponse = await fetch(
       `${optimServerUrl}/ogmios-proto-params`,
@@ -132,6 +189,11 @@ class BlockchainProvider implements L.Provider {
       throw responseBodyJson.contents
     }
   }
+
+  /**
+   * Delegated Blockfrost methods
+   * These methods pass through directly to the Blockfrost implementation
+   */
   getUtxos(addressOrCredential: string | L.Credential): Promise<L.UTxO[]> {
     return this.blockfrost.getUtxos(addressOrCredential)
   }
@@ -156,9 +218,12 @@ class BlockchainProvider implements L.Provider {
   submitTx(tx: string): Promise<string> {
     return this.blockfrost.submitTx(tx)
   }
-
 }
 
+/**
+ * Extended transaction completion functionality
+ * Adds network validation and enhanced coin selection
+ */
 Tx.prototype.complete = async function (options?: {
   change?: { address?: Address; outputData?: OutputData };
   coinSelection?: boolean;
@@ -263,6 +328,14 @@ Tx.prototype.complete = async function (options?: {
   );
 };
 
+/**
+ * Helper function to validate address network and convert to internal format
+ * 
+ * @param address - Address to validate and convert
+ * @param lucid - Lucid instance for network validation
+ * @returns Converted address in internal format
+ * @throws Error if address network doesn't match expected network
+ */
 function addressFromWithNetworkCheck(
   address: Address | RewardAddress,
   lucid: Lucid,
@@ -280,5 +353,8 @@ function addressFromWithNetworkCheck(
     : C.Address.from_bech32(address);
 }
 
-// this should be in its own lucid service
+/**
+ * Initialized Lucid instance with custom blockchain provider
+ * This should be in its own lucid service
+ */
 export const lucid: LucidExt = await Lucid.new(new BlockchainProvider('', undefined), cardanoNetwork);

@@ -1,16 +1,47 @@
+/**
+ * Global Styles
+ * 
+ * This is the main stylesheet that defines:
+ * - Global CSS variables and theme settings
+ * - Base HTML and body styles
+ * - Typography defaults
+ * - Common element styles
+ * - Layout utilities
+ */
+
+// Import global variables and theme settings
 @import "assets/variables";
+
+// Import CSS reset/normalize and custom fonts
 @import url("assets/normalize.css");
 @import url("assets/fonts");
 
+/**
+ * Box Sizing Reset
+ * 
+ * Ensures consistent box model across all elements
+ */
 *, *:before, *:after {
   box-sizing: border-box;
 }
+
+/**
+ * Height Management
+ * 
+ * Ensures full height layout for the application
+ */
 html {
   height: 100%;
 }
 html, body, #root {
   height: 100%;
 }
+
+/**
+ * Base Typography and Colors
+ * 
+ * Defines default text styles and color scheme
+ */
 body {
   background: $colorBaseBlack;
   color: $colorBaseWhite;
@@ -18,9 +49,21 @@ body {
   font-family: Roobert, sans-serif;
   font-weight: 400;
 }
+
+/**
+ * Image Handling
+ * 
+ * Prevents images from overflowing their containers
+ */
 img {
   max-width: 100%;
 }
+
+/**
+ * Link Styles
+ * 
+ * Defines default link appearance and hover states
+ */
 a {
   color: $colorGray200;
   text-decoration: none;
@@ -31,6 +74,11 @@ a {
   }
 }
 
+/**
+ * Flex Separator
+ * 
+ * Adds vertical separators between flex items
+ */
 .flex-separatored > .flex {
   border-left: 1px solid white;
 }

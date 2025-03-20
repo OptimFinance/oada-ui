@@ -1,47 +1,73 @@
+/**
+ * SelectInput Component Styling
+ * 
+ * SCSS module for the SelectInput component - a custom dropdown/select control
+ * that displays a selected option and reveals a dropdown of choices on click.
+ * 
+ * Features:
+ * - Styled container with gradient background
+ * - Dropdown menu with custom styling
+ * - Proper positioning of the dropdown relative to the input
+ * - Consistent spacing and interactive elements
+ */
+
+/* Import design system variables and shared styles */
 @import "src/assets/variables";
 @import "src/assets/base/shared.scss";
 
+/* Wrapper for the entire select component to handle positioning context */
 .wrapper{
-  position: relative;
+  position: relative;      /* Creates positioning context for absolute dropdown */
 }
+
+/* Main select input container - the clickable element that shows current selection */
 .container {
-  width: 280px;
-  height: 60px;
-  background: $gradiantBg4;
-  border: 1px solid $colorShade90;
-  border-radius: 24px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  cursor: pointer;
-  color: #fff;
-  padding-left: $gapM;
+  width: 280px;            /* Fixed width for consistent UI */
+  height: 60px;            /* Comfortable tap/click height */
+  background: $gradiantBg4; /* Gradient background for visual appeal */
+  border: 1px solid $colorShade90; /* Subtle border */
+  border-radius: 24px;     /* Rounded corners */
+  display: flex;           /* Allow horizontal layout of content */
+  justify-content: center; /* Center content horizontally */
+  align-items: center;     /* Center content vertically */
+  cursor: pointer;         /* Indicate interactivity */
+  color: #fff;             /* Text color */
+  padding-left: $gapM;     /* Left padding for content */
 
+  /* Text element inside container */
   p {
-    margin-right: $gapXs;
+    margin-right: $gapXs;  /* Space between text and any trailing element */
   }
+  
+  /* Icon/image inside container */
   img {
-    margin-right: $gapMxs;
+    margin-right: $gapMxs; /* Space between image and any trailing element */
   }
 }
-.option {
-  position: absolute;
-  background: $colorShade110;
-  border-radius: 12px;
-  padding: 1em;
-  top: 70px;
-  left: 0px;
-  width: 100%;
-  padding: $gapM;
-  ul {
-    list-style: none;
-    margin: 0;
-    padding: 0;
 
+/* Dropdown menu that appears when select is clicked */
+.option {
+  position: absolute;      /* Position relative to wrapper */
+  background: $colorShade110; /* Dark background for dropdown */
+  border-radius: 12px;     /* Rounded corners for dropdown */
+  top: 70px;               /* Position below the select input with spacing */
+  left: 0px;               /* Align with left edge of input */
+  width: 100%;             /* Match width of parent container */
+  padding: $gapM;          /* Consistent padding around options */
+  
+  /* List of options */
+  ul {
+    list-style: none;      /* Remove default bullet points */
+    margin: 0;             /* Remove default margins */
+    padding: 0;            /* Remove default padding */
+
+    /* Individual option items */
     li {
-      color: $colorBaseWhite;
-      margin-bottom: $gapMxs;
-      cursor: pointer;
+      color: $colorBaseWhite; /* Option text color */
+      margin-bottom: $gapMxs; /* Space between options */
+      cursor: pointer;        /* Indicate options are clickable */
+      
+      /* Remove bottom margin from last item for consistent padding */
       &:last-child {
         margin-bottom: 0;
       }

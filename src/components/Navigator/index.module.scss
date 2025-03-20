@@ -1,17 +1,34 @@
+/**
+ * Navigator Component Styling
+ * 
+ * SCSS module for the Navigator component - a clickable navigation element 
+ * that typically combines an icon and text to create a cohesive UI control
+ * for navigating between different areas of the application.
+ * 
+ * Features:
+ * - Horizontal layout with aligned icon and text
+ * - Interactive hover state for better user feedback
+ * - Consistent cursor indication for clickable behavior
+ */
+
+/* Import base shared styles and design variables */
 @import "../../assets/base/shared.scss";
 @import '../../assets/variables';
 
+/* Main navigator container with horizontal layout */
 .navigator {
-  display: flex;
-  align-items: center;
-  cursor: pointer;
+  display: flex;           /* Horizontal layout for icon and text */
+  align-items: center;     /* Vertically center the icon and text */
+  cursor: pointer;         /* Indicate interactive/clickable element */
 
+  /* Text element positioned next to the icon */
   .text {
-    margin-left: 6px;
+    margin-left: 6px;      /* Space between icon and text */
   }
 }
 
+/* Hover state affecting all children (both icon and text) */
 .navigator:hover * {
-  fill: $colorBaseWhite;
-  color: $colorBaseWhite;
+  fill: $colorBaseWhite;   /* Change icon color to white on hover */
+  color: $colorBaseWhite;  /* Change text color to white on hover */
 }

@@ -1,3 +1,27 @@
+/**
+ * Epoch Stake Auction Bid Form Component
+ *
+ * This complex component provides a user interface for participating in the OADA stake auction,
+ * allowing users to place bids for staking rights using either ADA or OADA tokens.
+ * 
+ * Key Features:
+ * - Support for both Market Orders (instant execution at current rate) and Limit Orders (executed when target rate is reached)
+ * - Dynamic calculation of bid amounts, APY rates, and requested stake amounts
+ * - Real-time validation and feedback
+ * - Support for different fill types (partial fill or fill-or-kill)
+ * - Currency selection between ADA and OADA tokens
+ * - Custom stake key support
+ * - Bid cancellation functionality
+ * 
+ * The form manages complex state relationships between three main values:
+ * 1. Bid amount (how much the user pays)
+ * 2. APY (interest rate)
+ * 3. Requested stake amount (how much staking rights they receive)
+ * 
+ * When any one of these values changes, the others are recalculated based on the 
+ * market conditions and auction algorithm.
+ */
+
 import Big from "big.js";
 import { ChangeEvent, useEffect, useMemo, useRef, useState } from "react";
 import { FiInfo } from "react-icons/fi";
@@ -31,11 +55,24 @@ import {Card} from "src/components/ui/card";
 import {cn} from "src/utils/tailwind";
 import {relativeEpochToAbsoluteEpoch} from "src/utils";
 
+/**
+ * Type Definitions
+ * 
+ * These types define the different modes and states that the bid form can operate in.
+ */
 type OrderType = "market" | "limit";
 type LimitOrderType = "fillOrKill" | "partialFill";
 type CurrencyChoice = "ada" | "oada";
 
-
+/**
+ * Input Parsing Result Type
+ * 
+ * Represents the outcome of parsing user input, with several possible states:
+ * - ParseOk: Valid input within accepted range
+ * - ParseGtMax: Input exceeds maximum allowed value
+ * - ParseLtMin: Input is below minimum allowed value
+ * - undefined: Invalid input format
+ */
 type ParseInputResult = {
   tag: "ParseOk"
   amount: Big
@@ -47,6 +84,19 @@ type ParseInputResult = {
   amount: Big
 } | undefined
 
+/**
+ * Parse Input Amount Function
+ * 
+ * A higher-order function that validates and normalizes numeric input based on 
+ * minimum and maximum constraints. It applies a transformation function to the input value
+ * and returns a tagged result indicating if the value is within range, too high, too low,
+ * or invalid.
+ * 
+ * @param minAmount - Minimum allowed value
+ * @param maxAmount - Maximum allowed value
+ * @param f - Transformation function to apply to the input value
+ * @returns A function that parses string inputs and returns ParseInputResult
+ */
 // if min > max then use max as min
 const parseInputAmount = (
   minAmount: Big | undefined,
@@ -81,37 +131,79 @@ const parseInputAmount = (
   }
 }
 
+/**
+ * Parse ADA Input Function
+ * 
+ * Specialized version of parseInputAmount that converts ADA input to Lovelace
+ * (1 ADA = 1,000,000 Lovelace) before validation.
+ * 
+ * @param minLovelace - Minimum allowed value in Lovelace
+ * @param maxLovelace - Maximum allowed value in Lovelace
+ * @returns A function that parses ADA input strings and returns ParseInputResult
+ */
 const parseInputAda = (minLovelace: Big | undefined, maxLovelace: Big | undefined) => (input: string): ParseInputResult => {
   return parseInputAmount(minLovelace, maxLovelace, (amount) => amount.mul(oneAdaAsLovelace))(input)
 }
 
-// requestedStakeAmount = floor (1000 * 73 * bidAmount / bidApy)
+/**
+ * Calculate Requested Stake Amount Function
+ * 
+ * Calculates the amount of stake rights received based on bid amount and APY.
+ * Uses the bidAmountToRequestedSize function from the OADA actions.
+ * Formula: requestedStakeAmount = floor (1000 * 73 * bidAmount / bidApy)
+ */
 export const calcRequestedStakeAmount = bidAmountToRequestedSize
 
-// totalBidAmount = requestedStakeAmount * bidApy / 1000 / 73
+/**
+ * Calculate Total Bid Amount Function
+ * 
+ * Calculates the amount a user needs to bid based on the requested stake amount and APY.
+ * Formula: totalBidAmount = requestedStakeAmount * bidApy / 1000 / 73
+ * 
+ * @param requestedStakeAmount - The amount of stake rights requested
+ * @param bidApy - The annual percentage yield (APY) in basis points (1/10th of a percent)
+ * @returns The total bid amount required
+ */
 const calcTotalBidAmount = (requestedStakeAmount: Big, bidApy: Big): Big => {
   return requestedStakeAmount.mul(bidApy).div(1000).div(73);
 }
 
+// Constants for conversion and limits
 const oneAdaAsLovelace = Big(1_000_000)
-
 const maxLovelace = Big("45000000000000000")
 
-const initialMinBidApy = Big(25)
-const initialMaxBidApy = Big(999999)
+// Initial values for APY ranges
+const initialMinBidApy = Big(25)       // 2.5%
+const initialMaxBidApy = Big(999999)   // 99999.9%
 const initialBidApy = initialMinBidApy
 
-const initialMinBidRequestedStakeLovelace = Big(250_000_000_000)
+// Initial values for stake amount ranges
+const initialMinBidRequestedStakeLovelace = Big(250_000_000_000)  // 250,000 ADA
 const initialMaxBidRequestedStakeLovelace = maxLovelace
 const initialBidRequestedStakeLovelace = initialMinBidRequestedStakeLovelace
 
+// Initial bid amount values calculated from other constants
 const initialMinBidLovelace = calcTotalBidAmount(initialMinBidRequestedStakeLovelace, initialBidApy).round(0, Big.roundUp)
 const initialMaxBidLovelace = calcTotalBidAmount(initialMaxBidRequestedStakeLovelace, initialBidApy).round(0, Big.roundUp)
 const initialBidLovelace = initialMinBidLovelace
 
-
+/**
+ * Last Modified Input Type
+ * 
+ * Tracks which of the three main input fields was last modified by the user.
+ * This determines which values are recalculated when the state is updated.
+ */
 type LastInputModified = "bidInput" | "apyInput" | "requestedStakeInput"
 
+/**
+ * Market Order State Interface
+ * 
+ * Represents the complete state for a market order, including:
+ * - Current market conditions (reserves, time interval)
+ * - Bid amount ranges and current value
+ * - APY ranges and current value
+ * - Requested stake ranges and current value
+ */
 type MarketOrderState = {
   totalReservesLovelace: Big,
   stakedReservesLovelace: Big,
@@ -127,6 +219,12 @@ type MarketOrderState = {
   bidRequestedStakeLovelace: Big,
 }
 
+/**
+ * Market Order State Change Interface
+ * 
+ * Represents a partial update to the market order state.
+ * Only includes the fields that are being changed.
+ */
 type MarketOrderStateChange = {
   totalReservesLovelace?: Big,
   stakedReservesLovelace?: Big,
@@ -364,6 +462,16 @@ const updateLimitOrderState = (
   }
 }
 
+/**
+ * BidForm Component
+ * 
+ * The main component for the stake auction bidding interface.
+ * This component allows users to create and manage bids in the OADA stake auction.
+ * 
+ * @param bidId - Optional ID of an existing bid to view or modify
+ * @param currentScreen - Which mode to display the form in ("bid" or "adjustBid")
+ * @returns A form interface for creating or managing stake auction bids
+ */
 export const BidForm = ({
   bidId,
   currentScreen = "bid",
@@ -373,15 +481,17 @@ export const BidForm = ({
 }) => {
   const dispatch = useAppDispatch();
 
+  // Get bid responses from the Redux store
   const stakeAuctionBidResponse = useAppSelector(selectStakeAuctionBidResponse);
   const cancelStakeAuctionBidResponse = useAppSelector(selectCancelStakeAuctionBidResponse)
 
+  // Combine responses for easier tracking of changes
   const responses: { [key: string]: BasicResponse<string> | undefined } = useMemo(() => ({
     stakeAuctionBidResponse,
     cancelStakeAuctionBidResponse
   }), [cancelStakeAuctionBidResponse?.contents, stakeAuctionBidResponse?.contents]);
 
-  // remember to update the list of values it watches
+  // Effect to handle bid response changes and update UI accordingly
   const prev = useRef(responses);
   useEffect(() => {
     for (const [key, prevResponse] of Object.entries(prev.current)) {
@@ -394,21 +504,26 @@ export const BidForm = ({
           dispatch(getOadaFrontendInfo());
         }
       }
-      prev.current[key] = currResponse; // { [key]: currResponse }
+      prev.current[key] = currResponse;
     }
   }, [dispatch, stakeAuctionBidResponse?.contents, cancelStakeAuctionBidResponse?.contents]);
 
+  // Get wallet information
   const partialWalletUtxos = useAppSelector(selectPartialWalletUtxos)
   const walletLovelace = useAppSelector(selectWalletLovelaceAmount)
   const walletAda = walletLovelace.div(oneAdaAsLovelace).round(0, Big.roundDown).toNumber()
 
+  // Get OADA network information
   const oadaFrontendInfo = useAppSelector(selectOadaFrontendInfo)
 
+  // Form state management
   const [orderType, setOrderType] = useState<OrderType>("market");
   const [limitOrderType, setLimitOrderType] = useState<LimitOrderType>("partialFill");
   const [currencyChoice, setCurrencyChoice] = useState<CurrencyChoice>("ada");
   const [orderTooSmall, setOrderTooSmall] = useState(false)
   const [passedFirstEpoch, setPassedFirstEpoch] = useState(false)
+  
+  // Market order state
   const [marketOrderState, setMarketOrderState] = useState<MarketOrderState>({
     totalReservesLovelace: Big(0),
     stakedReservesLovelace: Big(0),
@@ -424,6 +539,8 @@ export const BidForm = ({
     bidApy: initialBidApy,
     bidRequestedStakeLovelace: initialBidRequestedStakeLovelace,
   });
+  
+  // Limit order state
   const [limitOrderState, setLimitOrderState] = useState<LimitOrderState>({
     totalReservesLovelace: Big(0),
     stakedReservesLovelace: Big(0),
@@ -438,6 +555,8 @@ export const BidForm = ({
     bidApy: initialBidApy,
     bidRequestedStakeLovelace: initialBidRequestedStakeLovelace,
   });
+  
+  // Input field values
   const [marketOrderBidAdaInput, setMarketOrderBidAdaInput] = useState(
     initialBidLovelace.round(0, Big.roundDown).div(oneAdaAsLovelace).toString()
   );
@@ -453,6 +572,8 @@ export const BidForm = ({
   const [limitOrderBidRequestedStakeAdaInput, setLimitOrderRequestedStakeAdaInput] = useState(
     initialBidRequestedStakeLovelace.round(0, Big.roundDown).div(oneAdaAsLovelace).toString()
   );
+  
+  // Track which input field was last modified
   const [lastInputModified, setLastInputModified] = useState<LastInputModified>("requestedStakeInput");
   const marketOrderBidApyInput = initialBidApy.round(0, Big.roundDown).div(10).toString()
 
@@ -559,11 +680,27 @@ export const BidForm = ({
   console.log('maxBidRequestedStakeLovelace', maxBidRequestedStakeLovelace.toString())
   console.log('bidRequestedStakeLovelace', bidRequestedStakeLovelace.toString())
 
+  /**
+   * Handler for bid amount changes
+   * 
+   * Processes user input in the bid amount field, validates it,
+   * and updates the relevant state based on the current order type.
+   * 
+   * @param e - Change event from the input field
+   */
   const handleBidAmountChange = (e: ChangeEvent<HTMLInputElement>) => {
     const input = e.target.value
     handleBidAmountInput(input)
   };
 
+  /**
+   * Helper to process bid amount input
+   * 
+   * Core logic for validating and applying bid amount changes
+   * for both market and limit orders.
+   * 
+   * @param input - String value entered by the user
+   */
   const handleBidAmountInput = (input: string) => {
     const parseResult = parseInputAda(minBidLovelace, maxBidLovelace)(input)
     if (parseResult === undefined) {
@@ -667,11 +804,18 @@ export const BidForm = ({
     }
   }
 
+  /**
+   * Handler for bid submission
+   * 
+   * Gathers all the required bid parameters, validates them,
+   * and dispatches the stakeAuctionBid action to submit the bid.
+   */
   const handleBidNow = () => {
     if (bidApy === undefined || bidLovelace.lte(0)) {
       return;
     }
 
+    // Determine bid type based on current form state
     let bidType: BidType | undefined = undefined
     if (orderType === "market") {
       bidType = "BidTypePartial"
@@ -686,6 +830,7 @@ export const BidForm = ({
       return;
     }
 
+    // Prepare bid value based on chosen currency
     let bidValue: GYValueOut | undefined = undefined
     const bidAmountRounded = bidLovelace.round(0, Big.roundDown)
     if (currencyChoice === "ada") {
@@ -703,6 +848,7 @@ export const BidForm = ({
       return;
     }
 
+    // Dispatch the bid action
     dispatch(stakeAuctionBid({
       bidType,
       bidApy,
@@ -711,6 +857,12 @@ export const BidForm = ({
     })).then(() => dispatch(getOadaFrontendInfo))
   }
 
+  /**
+   * Handler for bid cancellation
+   * 
+   * Dispatches the cancelStakeAuctionBid action when the user
+   * wants to cancel an existing bid.
+   */
   const handleCancel = () => bidId && dispatch(cancelStakeAuctionBid({bidId}))
 
   const [advancedExpanded, setAdvancedExpanded] = useState(false)

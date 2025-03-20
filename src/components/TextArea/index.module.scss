@@ -1,42 +1,69 @@
+/**
+ * TextArea Component Styling
+ * 
+ * SCSS module for the TextArea component - a multi-line text input field
+ * that allows users to enter longer text content. Similar to the InputBox 
+ * component but specifically designed for larger amounts of text.
+ * 
+ * Features:
+ * - Consistent styling with the application design system
+ * - Various states: default, hover, focus, and error
+ * - Label and error message display
+ * - Responsive width and fixed height
+ */
+
+/* Import base shared styles and design variables */
 @import "../../assets/base/shared.scss";
 @import "src/assets/variables";
 
+/* Main container for the textarea, label, and error message */
 .container {
-  width: 100%;
+  width: 100%;             /* Take full width of parent */
 
+  /* Textarea input field styling */
   .input {
-    outline: none;
-    border: none;
-    border-radius: 14px;
-    padding: $gapM $gapLL;
-    width: 100%;
-    height: 120px;
-    margin-top: 8px;
-    color: white;
-    background: $colorShade110;
+    outline: none;         /* Remove default browser outline */
+    border: none;          /* Remove default border */
+    border-radius: 14px;   /* Rounded corners */
+    padding: $gapM $gapLL; /* Consistent padding (vertical, horizontal) */
+    width: 100%;           /* Full width input */
+    height: 120px;         /* Fixed height for multiple text lines */
+    margin-top: 8px;       /* Space below the label */
+    color: white;          /* Text color */
+    background: $colorShade110; /* Dark background */
 
+    /* Placeholder text color */
     &::placeholder {
-      color: $colorGray200;
+      color: $colorGray200; /* Lighter gray for placeholder */
     }
+    
+    /* Hover state */
     &:hover {
-      background: $colorShade100;
+      background: $colorShade100; /* Slightly lighter background on hover */
     }
+    
+    /* Focus state */
     &:focus {
-      border: 1px solid $colorGray300;
+      border: 1px solid $colorGray300; /* Add border when focused */
     }
   }
+  
+  /* Error state styling for textarea */
   .errorInput {
-    border: 1px solid $colorError600;
+    border: 1px solid $colorError600; /* Red border for error state */
   }
 
+  /* Label styling */
   .label {
-    color: $colorGray200;
-    padding: 0;
-    margin: 0 !important;
-    font-size: 14px;
+    color: $colorGray200;  /* Muted gray color */
+    padding: 0;            /* No padding */
+    margin: 0 !important;  /* Remove any margin (important to override potential conflicts) */
+    font-size: 14px;       /* Smaller font size */
   }
+  
+  /* Error message styling */
   .errorText {
-    color: $colorError600;
-    margin-top: $gapMxs;
+    color: $colorError600; /* Red text for error messages */
+    margin-top: $gapMxs;   /* Small space above error message */
   }
 }

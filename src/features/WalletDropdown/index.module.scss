@@ -1,62 +1,105 @@
+/**
+ * Wallet Dropdown Styles
+ *
+ * Defines the visual presentation for the wallet dropdown menu component.
+ * Features a dark theme design with organized sections for wallet information,
+ * actions, and balance display.
+ */
+
 @import "src/assets/variables";
+
+/* Main Container
+-------------------------------------------------- */
 .container {
+  // Vertical stack layout
   display: flex;
   flex-direction: column;
   gap: 1em;
 }
+
+/* Title Section
+-------------------------------------------------- */
 .title {
   display: flex;
   align-items: center;
+
   .logo {
     margin-right: 10px;
     height: 20px;
+
+    // Logo SVG sizing
     svg {
       width: 20px;
       height: 20px;
     }
   }
 }
+
+/* Address Display
+-------------------------------------------------- */
 .address {
   width: 100%;
+
   .value {
+    // Text truncation for long addresses
     display: inline-block;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
   }
+
   .icon {
     margin-right: 6px;
   }
 }
+
+/* Action Buttons Grid
+-------------------------------------------------- */
 .buttons {
+  // Two-column grid layout
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 10px;
+
   .icon {
     margin-right: 6px;
   }
 }
+
+/* Boxed Content Container
+-------------------------------------------------- */
 .box {
+  // Visual container styling
   border: 1px solid $colorGray600;
   border-radius: 8px;
   padding: 5px 10px;
 }
+
+/* Wallet Balance Table
+-------------------------------------------------- */
 .wallets {
   width: 100%;
   color: $colorGray200;
+
   td {
     padding: 5px 0;
     vertical-align: middle;
-    &:last-of-type{
+
+    // Right-aligned values with different color
+    &:last-of-type {
       text-align: right;
       color: $colorBaseWhite;
     }
   }
+
   .icon {
     vertical-align: middle;
     margin-right: 10px;
   }
 }
+
+/* Disconnect Button
+-------------------------------------------------- */
 .disconnect {
   .icon {
     margin-right: 6px;

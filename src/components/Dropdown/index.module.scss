@@ -1,16 +1,28 @@
+/**
+ * Dropdown Component Styling
+ * 
+ * SCSS module that defines the styling for the Dropdown component - a floating
+ * menu that appears below a trigger element, typically containing selectable options.
+ * Features absolute positioning and z-index management for proper layering.
+ */
+
+/* Import project variables (colors, spacing, etc.) */
 @import "src/assets/variables";
 
+/* Main dropdown container */
 .dropdown {
-  position: absolute;
-  left: 0;
-  top: 70px;
-  background: $colorShade110;
-  border-radius: 12px;
-  padding: 1em;
-  width: fit-content;
-  cursor: pointer;
-  z-index: 199;
+  position: absolute;           /* Position relative to nearest positioned ancestor */
+  left: 0;                      /* Align to the left edge of positioned parent */
+  top: 70px;                    /* Position below the trigger with 70px offset */
+  background: $colorShade110;   /* Dark background color */
+  border-radius: 12px;          /* Rounded corners */
+  padding: 1em;                 /* Internal spacing */
+  width: fit-content;           /* Size to content width */
+  cursor: pointer;              /* Pointer cursor for all dropdown content */
+  z-index: 199;                 /* High z-index to appear above other content */
 }
+
+/* Class applied when dropdown is visible */
 .open {
-  display: block;
+  display: block;               /* Make dropdown visible (implies default is hidden) */
 }

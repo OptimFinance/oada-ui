@@ -1,3 +1,13 @@
+/**
+ * Main Application Component
+ * 
+ * This is the root component of the application that handles:
+ * - Application routing and layout structure
+ * - Wallet initialization and management
+ * - UTxO updates and synchronization
+ * - Cardano dApp connector integration
+ */
+
 import {
   BrowserRouter as Router,
   Route,
@@ -24,12 +34,28 @@ import { OADAMSE } from "./features/dAppHub/OADA/MintStakeEarn";
 import { EpochStakeAuctionDashboard } from "./features/dAppHub/EpochStakeAuction/Dashboard";
 import { EpochStakeAuctionBid } from "./features/dAppHub/EpochStakeAuction/Bid";
 
+/**
+ * App Component
+ * 
+ * The main application component that:
+ * 1. Initializes and manages wallet connections
+ * 2. Handles UTxO updates and synchronization
+ * 3. Sets up application routing
+ * 4. Manages the Cardano dApp connector bridge
+ */
 function App() {
   const dispatch = useAppDispatch();
   const wallet = useAppSelector(selectWallet);
   const ws = useContext(WebsocketContext);
 
-  // initialize wallet
+  /**
+   * Wallet Initialization Effect
+   * 
+   * Handles the initial setup of the wallet connection:
+   * - Cleans up stale wallet data from localStorage
+   * - Restores previous wallet connection if available
+   * - Initializes the Cardano dApp connector bridge
+   */
   useEffect(() => {
     const effName = "AppInitWallet";
     console.log(`${effName} ${new Date().getTime()}`);
@@ -58,7 +84,11 @@ function App() {
     );
   }, [dispatch, wallet, ws]);
 
-  // initialize wallet utxos
+  /**
+   * Wallet UTxO Initialization Effect
+   * 
+   * Initializes and updates the wallet's UTxO list when a wallet is connected
+   */
   useEffect(() => {
     const effName = "AppInitWalletUtxos";
     console.log(`${effName} ${new Date().getTime()}`);
@@ -69,7 +99,12 @@ function App() {
     }
   }, [wallet, dispatch]);
 
-  // update on interval
+  /**
+   * Periodic Wallet UTxO Update
+   * 
+   * Sets up an interval to periodically update the wallet's UTxO list
+   * every 60 seconds when a wallet is connected
+   */
   const intervalName = "App";
   useInterval(
     intervalName,
@@ -83,6 +118,14 @@ function App() {
     [dispatch, wallet]
   );
 
+  /**
+   * Application Routing Structure
+   * 
+   * Defines the main application routes:
+   * - Dashboard routes (/dashboard, /)
+   * - OADA Mint-Stake-Earn route (/oada/mint-stake-earn)
+   * - Epoch Stake Auction routes (/epoch-stake-auction/*)
+   */
   return (
     <Router>
       <Topbar />

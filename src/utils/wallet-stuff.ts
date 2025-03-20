@@ -1,3 +1,14 @@
+/**
+ * Cardano Wallet UTxO Management
+ * 
+ * This module provides utilities for managing Cardano wallet UTxOs (Unspent Transaction Outputs)
+ * and their relationships. It handles:
+ * - Mapping between wallet inputs and transaction outputs
+ * - Tracking virtual UTxOs for pending transactions
+ * - Persisting UTxO state in localStorage
+ * - Converting between Lucid and server UTxO formats
+ */
+
 import * as Lucid from 'lucid-cardano'
 import cloneDeep from "lodash.clonedeep"
 import makeJSONBigInt, { } from "json-bigint"
@@ -7,6 +18,14 @@ import * as Server from '../types/server'
 
 const JSONBigInt = makeJSONBigInt({ useNativeBigInt: true, alwaysParseAsBig: true, constructorAction: 'preserve' })
 
+/**
+ * Maps wallet UTxOs to their corresponding transaction outputs
+ * 
+ * This type maintains three key mappings:
+ * 1. outputUtxosRefByWalletUtxoId: Maps wallet inputs to transaction outputs
+ * 2. outputUtxosByOutputUtxosRef: Maps output references to UTxO details
+ * 3. walletUtxoIdsByOutputUtxosRef: Maps outputs back to wallet inputs
+ */
 export type WalletUtxoMap = {
   outputUtxosRefByWalletUtxoId: {
     // wallet inputs mapping to tx outputs
@@ -27,11 +46,21 @@ export type WalletUtxoMap = {
   }
 }
 
+/**
+ * Converts a UTxO reference to a string format
+ * @param utxoRef - The UTxO reference to convert
+ * @returns String in format "txHash#outputIndex"
+ */
 const utxoRefToString = (utxoRef: Server.UtxoRef): string => {
   return utxoRef.txHash + '#' + utxoRef.outputIndex
 }
 
-// the merged wallet map creates copies of both maps before merging
+/**
+ * Merges two wallet UTxO maps, creating deep copies to avoid mutation
+ * @param a - First wallet UTxO map
+ * @param b - Second wallet UTxO map
+ * @returns Combined wallet UTxO map
+ */
 export const mergeWalletUtxoMap = (a: WalletUtxoMap, b: WalletUtxoMap): WalletUtxoMap => {
   const newOutputUtxosRefByWalletUtxoId = cloneDeep({ ...a.outputUtxosRefByWalletUtxoId, ...b.outputUtxosRefByWalletUtxoId })
   const newOutputUtxosByOutputUtxosRef = cloneDeep({ ...a.outputUtxosByOutputUtxosRef, ...b.outputUtxosByOutputUtxosRef })
@@ -43,14 +72,30 @@ export const mergeWalletUtxoMap = (a: WalletUtxoMap, b: WalletUtxoMap): WalletUt
   }
 }
 
+/**
+ * Extracts transaction hash from an output UTxOs reference
+ * @param outputUtxosRef - Reference string in format "txId#oix1,oix2,..."
+ * @returns Transaction hash
+ */
 const outputUtxosRefToTxHash = (outputUtxosRef: string): string => {
   return outputUtxosRef.split('#', 1)[0]
 }
 
+/**
+ * Extracts transaction hash from a wallet UTxO ID
+ * @param walletUtxoId - UTxO ID in format "txId#oix"
+ * @returns Transaction hash
+ */
 const walletUtxoIdToTxHash = (walletUtxoId: string): string => {
   return walletUtxoId.split('#', 1)[0]
 }
 
+/**
+ * Creates a union of two Sets
+ * @param setA - First Set
+ * @param setB - Second Set
+ * @returns Union of the two Sets
+ */
 function union<A>(setA: Set<A>, setB: Set<A>) {
   const _union = new Set(setA);
   for (const elem of setB) {
@@ -59,7 +104,12 @@ function union<A>(setA: Set<A>, setB: Set<A>) {
   return _union;
 }
 
-// mutates WalletUtxoMap
+/**
+ * Removes UTxOs associated with specified transaction hashes from the wallet UTxO map
+ * @param walletUtxoMap - The UTxO map to prune
+ * @param onchainTxHashes - Set of transaction hashes to remove
+ * @returns Pruned wallet UTxO map
+ */
 const pruneTxHashes = (walletUtxoMap: WalletUtxoMap, onchainTxHashes: Set<string>): WalletUtxoMap => {
   if (onchainTxHashes.size === 0) {
     return walletUtxoMap;
@@ -90,16 +140,31 @@ const pruneTxHashes = (walletUtxoMap: WalletUtxoMap, onchainTxHashes: Set<string
   }
 }
 
-// mutates walletUtxoMap
+/**
+ * Removes UTxOs that are already on-chain from the wallet UTxO map
+ * @param walletUtxoMap - The UTxO map to prune
+ * @param lucidWalletUtxos - Array of on-chain UTxOs from Lucid
+ */
 export const pruneWalletUtxoMap = (walletUtxoMap: WalletUtxoMap, lucidWalletUtxos: Lucid.UTxO[]) => {
   const onchainTxHashes = new Set(lucidWalletUtxos.map(u => u.txHash))
   pruneTxHashes(walletUtxoMap, onchainTxHashes)
 }
 
+/**
+ * Converts a UTxO to a wallet UTxO ID
+ * @param utxo - The UTxO to convert
+ * @returns Wallet UTxO ID string
+ */
 const utxoToWalletUtxoId = (utxo: Server.Utxo): string => {
   return utxoRefToString(utxo.utxoRef)
 }
 
+/**
+ * Gets the most recent UTxOs for a given wallet UTxO ID
+ * @param walletUtxoMap - The UTxO map to search
+ * @param walletUtxoId - The wallet UTxO ID to find UTxOs for
+ * @returns Array of most recent UTxOs
+ */
 const getMostRecentUtxos = (walletUtxoMap: WalletUtxoMap, walletUtxoId: string): Server.Utxo[] => {
   const outputUtxosRef = walletUtxoMap.outputUtxosRefByWalletUtxoId[walletUtxoId]
   if (outputUtxosRef === undefined) {
@@ -120,16 +185,32 @@ const getMostRecentUtxos = (walletUtxoMap: WalletUtxoMap, walletUtxoId: string):
   }
 }
 
+/**
+ * Converts a Lucid UTxO to a wallet UTxO ID
+ * @param lucidUtxo - The Lucid UTxO to convert
+ * @returns Wallet UTxO ID string
+ */
 const lucidUtxoToWalletUtxoId = (lucidUtxo: Lucid.UTxO): string => {
   return lucidUtxo.txHash + '#' + lucidUtxo.outputIndex
 }
 
+/**
+ * Converts an array of Lucid UTxOs to an output UTxOs reference
+ * @param lucidUtxos - Array of Lucid UTxOs
+ * @returns Output UTxOs reference string
+ */
 const lucidUtxosToOutputUtxosRef = (lucidUtxos: Lucid.UTxO[]): string => {
   const txId = lucidUtxos[0].txHash
   const indexes = lucidUtxos.map(u => u.outputIndex).join(',')
   return txId + '#' + indexes
 }
 
+/**
+ * Gets the most recent UTxOs from Lucid UTxOs
+ * @param walletUtxoMap - The UTxO map to search
+ * @param lucidWalletUtxos - Array of Lucid UTxOs
+ * @returns Tuple of [remaining Lucid UTxOs, most recent server UTxOs]
+ */
 export const getMostRecentUtxosFromLucidUtxos = (
   walletUtxoMap: WalletUtxoMap, lucidWalletUtxos: Lucid.UTxO[]
 ): [Lucid.UTxO[], Server.Utxo[]] => {
@@ -148,6 +229,11 @@ export const getMostRecentUtxosFromLucidUtxos = (
   return [remainingLucidUtxos, Array.from(new Set(finalServerUtxos))]
 }
 
+/**
+ * Converts server wallet stuff to a wallet UTxO map
+ * @param walletStuff - Server wallet stuff to convert
+ * @returns Wallet UTxO map
+ */
 export const serverToWalletUtxoMap = (walletStuff: Server.WalletStuff): WalletUtxoMap => {
   const newWalletUtxoIdsByOutputUtxosRef =
     Object.fromEntries(Object.entries(walletStuff.walletUtxoIdsByOutputUtxosRef).map(([k, v]) => [k, new Set(v)]))
@@ -174,12 +260,19 @@ const dehydrateWalletUtxoMap = (walletUtxoMap: WalletUtxoMap): string => {
 
 }
 
+/**
+ * Empty wallet stuff object
+ */
 const emptyWalletStuff: Server.WalletStuff = {
   outputUtxosRefByWalletUtxoId: {},
   outputUtxosByOutputUtxosRef: {},
   walletUtxoIdsByOutputUtxosRef: {}
 }
 
+/**
+ * Gets the wallet UTxO map from localStorage
+ * @returns Wallet UTxO map
+ */
 export const getWalletUtxoMap = (): WalletUtxoMap => {
   const dehydratedWalletStuff = localStorage.getItem('walletStuff')
   console.log("GET DEHYDRATED UTXO MAP")
@@ -191,12 +284,20 @@ export const getWalletUtxoMap = (): WalletUtxoMap => {
   return serverToWalletUtxoMap(walletStuff)
 }
 
+/**
+ * Saves the wallet UTxO map to localStorage
+ * @param walletUtxoMap - The UTxO map to save
+ */
 export const setWalletUtxoMap = (walletUtxoMap: WalletUtxoMap) => {
   const jsonified = dehydrateWalletUtxoMap(walletUtxoMap)
   localStorage.setItem('walletStuff', jsonified)
 }
 
-// mutates map
+/**
+ * Removes a transaction hash and its associated UTxOs from the wallet UTxO map
+ * @param txHash - Transaction hash to remove
+ * @param walletUtxoMap - The UTxO map to modify
+ */
 function removeTxHashFromWalletUtxoMap(txHash: string, walletUtxoMap: WalletUtxoMap): void {
   for (const [outputUtxosRef, walletUtxoIds] of Object.entries(walletUtxoMap.walletUtxoIdsByOutputUtxosRef)) {
     const [outputUtxosTxHash] = outputUtxosRef.split("#", 1)
@@ -411,6 +512,12 @@ const getLatestUtxosWorker = (knownUtxos: UTxO[], virtualWalletUtxoMap: VirtualW
   return utxos
 }
 
+/**
+ * Updates a virtual wallet UTxO map with known transaction IDs
+ * @param knownTxIds - Array of known transaction IDs
+ * @param virtualWalletUtxoMap - Virtual wallet UTxO map to update
+ * @returns Updated virtual wallet UTxO map
+ */
 export const updateVirtualWalletUtxoMapWithKnownTxIds = (
   knownTxIds: string[], virtualWalletUtxoMap: VirtualWalletUtxoMap
 ): VirtualWalletUtxoMap => {
@@ -432,6 +539,10 @@ export const updateVirtualWalletUtxoMapWithKnownTxIds = (
   }
 }
 
+/**
+ * Gets the persisted virtual wallet UTxO map from localStorage
+ * @returns Virtual wallet UTxO map
+ */
 const getPersistedVirtualWalletUtxoMap = (): VirtualWalletUtxoMap => {
   const dehydratedVirtualWalletUtxoMap = localStorage.getItem('virtualWalletUtxoMap')
   let virtualWalletUtxoMap = emptyVirtualWalletUtxoMap
@@ -441,11 +552,21 @@ const getPersistedVirtualWalletUtxoMap = (): VirtualWalletUtxoMap => {
   return virtualWalletUtxoMap
 }
 
+/**
+ * Saves a virtual wallet UTxO map to localStorage
+ * @param virtualWalletUtxoMap - Virtual wallet UTxO map to save
+ */
 const setPersistedVirtualWalletUtxoMap = (virtualWalletUtxoMap: VirtualWalletUtxoMap): void => {
   const dehydratedVirtualWalletUtxoMap = JSONBigInt.stringify(virtualWalletUtxoMap)
   localStorage.setItem('virtualWalletUtxoMap', dehydratedVirtualWalletUtxoMap)
 }
 
+/**
+ * Updates the persisted virtual wallet UTxO map with known transaction IDs
+ * @param knownTxIds - Array of known transaction IDs
+ * @param virtualWalletUtxoMap - Virtual wallet UTxO map to update
+ * @returns Updated virtual wallet UTxO map
+ */
 export const updatePersistedVirtualWalletUtxoMap = (knownTxIds: string[], virtualWalletUtxoMap: VirtualWalletUtxoMap): VirtualWalletUtxoMap => {
   const prevVirtualWalletUtxoMap = getPersistedVirtualWalletUtxoMap()
   const mergedVirtualWalletUtxoMap = mergeVirtualWalletUtxoMaps(prevVirtualWalletUtxoMap, virtualWalletUtxoMap)
@@ -462,17 +583,10 @@ export const updatePersistedVirtualWalletUtxoMap = (knownTxIds: string[], virtua
   return nextVirtualWalletUtxoMap
 }
 
-
-// NOTE: as long as a storage get and set happen within the
-// same callback/function/resulting callstack then we have no race
-// condition within a single tab. We DO have a race condition
-// across several tabs/windows, but I assume it's rare to the point
-// that no one will ever see it.
-// This goes for the callback in the set timeout code. It will run
-// to completion atomically within a SINGLE event loop. AKA a single
-// tab. If this ever becomes a problem because someone has 10 tabs
-// open on the same page clicking away, then we will actually need
-// to care.
+/**
+ * Updates the wallet UTxO map with new wallet stuff
+ * @param walletStuff - New wallet stuff to merge
+ */
 export const updateWalletUtxoMap = (walletStuff: Server.WalletStuff): void => {
   const currWalletUtxoMap = getWalletUtxoMap()
   const newWalletUtxoMap = serverToWalletUtxoMap(walletStuff)
@@ -490,3 +604,4 @@ export const updateWalletUtxoMap = (walletStuff: Server.WalletStuff): void => {
     setWalletUtxoMap(nextWalletUtxoMap)
   }, 1000 * 180)
 }
+

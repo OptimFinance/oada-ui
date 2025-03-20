@@ -1,70 +1,101 @@
+/**
+ * Modal Component Styling
+ * 
+ * SCSS module for the Modal component - a customizable overlay dialog
+ * that displays content above the main UI with a backdrop.
+ * 
+ * Features:
+ * - Responsive positioning
+ * - Backdrop with optional blur
+ * - Custom scrolling behavior
+ * - Close button
+ * - Various display states (hidden, blur, blocked)
+ */
+
+/* Import design system variables */
 @import "src/assets/variables";
 
+/* Toggle element - hidden by default */
 .toggle {
-  display: none;
-  margin: 10px 0 10px;
+  display: none;           /* Hidden from view */
+  margin: 10px 0 10px;     /* Vertical spacing if displayed */
 }
 
+/* Backdrop/overlay that covers the entire viewport */
 .backdrop {
-  position: fixed;
+  position: fixed;         /* Fixed position covering the viewport */
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  z-index: 100;
-  display: flex;
+  z-index: 100;            /* Appears above most content */
+  display: flex;           /* Center the modal popup */
   justify-content: center;
   align-items: center;
+  
+  /* States for the backdrop */
   &.hidden {
-    display: none;
+    display: none;         /* Completely hide the modal and backdrop */
   }
+  
   &.blur {
-    // backdrop-filter: blur(4px);
-    z-index: 200;
+    // backdrop-filter: blur(4px);  /* Commented out blur effect */
+    z-index: 200;          /* Higher z-index for blur state */
   }
+  
   &.blocked {
-    pointer-events: none;
+    pointer-events: none;  /* Allows clicking through the backdrop */
   }
 }
 
+/* Modal popup container */
 .popup {
-  background: $colorOptimGray115;
-  border-radius: 12px;
-  width: 600px;
-  max-height: 100vh;
-  overflow-y: auto;
-  position: relative;
-  border: 1px solid $colorShade90;
-  padding: $gap3XL;
-  overflow-x: visible;
-  // overflow-y: visible;
+  background: $colorOptimGray115;  /* Dark background color */
+  border-radius: 12px;             /* Rounded corners */
+  width: 600px;                    /* Fixed width */
+  max-height: 100vh;               /* Maximum height is viewport height */
+  overflow-y: auto;                /* Vertical scrolling when needed */
+  position: relative;              /* For positioning close button */
+  border: 1px solid $colorShade90; /* Subtle border */
+  padding: $gap3XL;                /* Consistent internal spacing */
+  overflow-x: visible;             /* Allow content to extend horizontally */
+  // overflow-y: visible;          /* Commented out vertical overflow */
+  
+  /* States for the popup */
   &.blur {
-    border: none;
+    border: none;                  /* Remove border in blur state */
   }
+  
   &.inAction {
-    pointer-events: all;
+    pointer-events: all;           /* Ensure the modal is interactive */
   }
+  
+  /* Custom scrollbar styling */
   &::-webkit-scrollbar {
-    width: 5px;
+    width: 5px;                    /* Thin scrollbar */
   }
+  
   &::-webkit-scrollbar-track {
-    box-shadow: inset 0 0 6px $colorBaseBlack;
+    box-shadow: inset 0 0 6px $colorBaseBlack;  /* Darker scrollbar track */
   }
+  
   &::-webkit-scrollbar-thumb {
-    background-color: $colorOptimGray700;
+    background-color: $colorOptimGray700;       /* Scrollbar handle color */
   }
 }
 
+/* Close button styling */
 .close {
   display: block;
-  position: absolute;
-  top: 26px;
-  right: 16px;
-  cursor: pointer;
-  fill: $colorGray200;
+  position: absolute;        /* Positioned relative to the popup */
+  top: 26px;                 /* Distance from top */
+  right: 16px;               /* Distance from right */
+  cursor: pointer;           /* Show pointer on hover */
+  fill: $colorGray200;       /* Icon color */
 
+  /* Interactive states */
   &:hover,
   &:focus {
-    fill: $colorBaseWhite;
+    fill: $colorBaseWhite;   /* Brighter color on hover/focus */
   }
 }

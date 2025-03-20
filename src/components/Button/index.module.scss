@@ -1,141 +1,184 @@
+/**
+ * Button Component Styling
+ * 
+ * SCSS module that defines the styling for the Button component.
+ * Includes multiple variations (primary, secondary, outlined, etc.),
+ * size options, states (hover, focus, disabled), and special types (radio).
+ */
+
+/* Import project variables (colors, spacing, etc.) */
 @import "src/assets/variables";
 
+/* Base button styling */
 .button {
-  border: none;
-  border-radius: 24px;
-  height: fit-content;
-  color: $colorBaseWhite;
-  min-height: 36px;
-  max-width: 100%;
-  overflow: hidden;
-  padding: 0 14px;
-  font-size: 14px;
-  font-weight: 400;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  user-select: none;
-  background: linear-gradient(90deg, #2853eb 0%, #9c95e9 100%);
+  border: none;                /* Remove default button borders */
+  border-radius: 24px;         /* Rounded corners for modern look */
+  height: fit-content;         /* Allow button to size to content */
+  color: $colorBaseWhite;      /* Default text color */
+  min-height: 36px;            /* Minimum height for touch targets */
+  max-width: 100%;             /* Prevent overflow beyond container */
+  overflow: hidden;            /* Hide any overflow content */
+  padding: 0 14px;             /* Horizontal padding for content */
+  font-size: 14px;             /* Default font size */
+  font-weight: 400;            /* Regular font weight */
+  display: inline-flex;        /* Allow for icon + text alignment */
+  align-items: center;         /* Vertically center content */
+  justify-content: center;     /* Horizontally center content */
+  cursor: pointer;             /* Show pointer cursor on hover */
+  user-select: none;           /* Prevent text selection */
+  background: linear-gradient(90deg, #2853eb 0%, #9c95e9 100%); /* Default gradient background */
 
+  /* Focus state styling */
   &:focus {
-    box-shadow: 0px 0px 0px 2px #d6d3ff;
+    box-shadow: 0px 0px 0px 2px #d6d3ff; /* Focus ring for accessibility */
   }
+  
+  /* Hover state styling */
   &:hover {
-    background: $colorBaseWhite;
-    color: $colorBaseBlack;
+    background: $colorBaseWhite; /* White background on hover */
+    color: $colorBaseBlack;      /* Black text on hover */
   }
+  
+  /* Special handling for images that need to be inverted on hover */
   &:hover img.invertOnHover {
-    filter: invert(1)
+    filter: invert(1)            /* Invert image colors on hover */
   }
+  
+  /* Primary button variation - main call to action */
   &.primary {
-    background: $priBtnColor;
+    background: $priBtnColor;    /* Primary button background */
 
     &:hover {
-      background: $colorBaseWhite;
-      color: $colorBaseBlack;
+      background: $colorBaseWhite; /* White background on hover */
+      color: $colorBaseBlack;      /* Black text on hover */
     }
   }
 
+  /* Icon button variation - for buttons that only contain an icon */
   &.icon {
-    background: $colorGray900;
-    padding: 0;
-    height: 100%;
+    background: $colorGray900;   /* Dark background for icon buttons */
+    padding: 0;                  /* Remove padding for icon buttons */
+    height: 100%;                /* Fill height of container */
+    
     &:hover,
     &:focus {
-      box-shadow: 0 0 0 1px $colorViolet200 inset;
+      box-shadow: 0 0 0 1px $colorViolet200 inset; /* Subtle border effect on interaction */
     }
   }
 
+  /* Clear/transparent button variation */
   &.clear {
-    background: transparent;
-    color: $colorBaseWhite;
-    border: 1px solid $colorGray600;
+    background: transparent;     /* Transparent background */
+    color: $colorBaseWhite;      /* White text */
+    border: 1px solid $colorGray600; /* Subtle border */
+    
     &:hover,
     &:focus {
-      background-color: $colorBaseWhite;
-      color: $colorBaseBlack;
+      background-color: $colorBaseWhite; /* White background on interaction */
+      color: $colorBaseBlack;            /* Black text on interaction */
     }
   }
-  &.sm {
+  
+  /* Size variations */
+  &.sm {                         /* Small size */
     padding: 6px 0;
     font-size: 12px;
   }
-  &.md {
+  &.md {                         /* Medium size */
     padding: 8px 0;
     font-size: 12px;
   }
-  &.lg {
+  &.lg {                         /* Large size */
     padding: 10px 0;
     font-size: 14px;
     line-height: 24px;
   }
-  &.xl {
+  &.xl {                         /* Extra large size */
     padding: 10px 20px;
     font-size: 16px;
     line-height: 24px;
   }
-  &.xxl {
+  &.xxl {                        /* Extra extra large size */
     padding: 15px 20px;
     font-size: 16px;
   }
+  
+  /* Secondary button variation - less emphasis than primary */
   &.secondary {
-    background: $colorShade100;
-    color: inherit;
+    background: $colorShade100;  /* Light gray background */
+    color: inherit;              /* Inherit text color from parent */
   }
+  
+  /* White button variation - white background with dark text */
   &.white {
-    background: $colorBaseWhite;
-    color: $colorBaseBlack;
+    background: $colorBaseWhite; /* White background */
+    color: $colorBaseBlack;      /* Black text */
 
     &:hover {
-      background: $colorBlue;
-      color: $colorBaseWhite;
+      background: $colorBlue;    /* Blue background on hover */
+      color: $colorBaseWhite;    /* White text on hover */
+      
+      /* Change SVG fill color on hover */
       svg * {
         fill: $colorBaseWhite;
       }
     }
   }
+  
+  /* Disabled state */
   &:disabled {
-    opacity: 0.33;
-    pointer-events: none;
+    opacity: 0.33;               /* Reduced opacity when disabled */
+    pointer-events: none;        /* Disable mouse events when disabled */
   }
+  
+  /* Outlined button variation - transparent with border */
   &.outlined {
-    background: transparent;
-    border: 1px solid $colorShade90;
-    color: inherit;
+    background: transparent;     /* Transparent background */
+    border: 1px solid $colorShade90; /* Border */
+    color: inherit;              /* Inherit text color from parent */
+    
     &:hover,
     &:focus {
-      background-color: $colorBaseWhite;
-      color: $colorBaseBlack;
+      background-color: $colorBaseWhite; /* White background on interaction */
+      color: $colorBaseBlack;            /* Black text on interaction */
     }
+    
     &:hover {
+      /* Change SVG fill color on hover */
       svg * {
         fill: $colorBaseBlack;
       }
     }
   }
+  
+  /* Full width variation - stretches to container width */
   &.fullWidth {
-    width: 100%;
+    width: 100%;                 /* Take up full width of container */
   }
 }
-.radio {
-  -webkit-appearance: none;
-  appearance: none;
-  background-color: transparent;
-  margin: 0;
-  display: none;
 
+/* Radio button styling (for button groups that act as radio inputs) */
+.radio {
+  -webkit-appearance: none;      /* Hide default radio appearance (Safari) */
+  appearance: none;              /* Hide default radio appearance */
+  background-color: transparent; /* Transparent background */
+  margin: 0;                     /* Remove margin */
+  display: none;                 /* Hide the actual radio input */
+
+  /* Style the button that represents the radio option */
   + .button {
-    width: 100%;
-    background: $colorGray800;
-    color: $colorBaseWhite;
-    font-size: 16px;
+    width: 100%;                 /* Full width */
+    background: $colorGray800;   /* Dark background */
+    color: $colorBaseWhite;      /* White text */
+    font-size: 16px;             /* Larger font size */
   }
 
+  /* Style for the selected radio option */
   &:checked + .button {
-    background-color: $colorViolet200 !important;
-    color: $colorViolet900;
+    background-color: $colorViolet200 !important; /* Purple background when selected */
+    color: $colorViolet900;                       /* Dark purple text when selected */
 
+    /* Ensure bold text within a selected radio button has correct color */
     b {
       color: inherit;
     }

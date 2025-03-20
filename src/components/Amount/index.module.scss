@@ -1,24 +1,40 @@
+/**
+ * Amount Component Styling
+ * 
+ * SCSS module that defines the styling for the Amount component - a numeric
+ * input control with increment/decrement buttons.
+ * The component has a dark, compact design with clear visual separation
+ * between buttons and the value display.
+ */
+
+/* Import project variables (colors, spacing, etc.) */
 @import "src/assets/variables";
+
+/* Main container for the Amount component */
 .container {
-  display: inline-block;
-  background: $colorGray800;
-  padding: 10px;
-  border-radius: 8px;
+  display: inline-block;     /* Allow component to be used inline with other elements */
+  background: $colorGray800; /* Dark background for contrast */
+  padding: 10px;             /* Space around the internal elements */
+  border-radius: 8px;        /* Rounded corners for the container */
 }
+
+/* Button styling for both increment and decrement buttons */
 .button {
-  border: none;
-  background: $colorGray600;
-  border-radius: 8px;
-  height: 30px;
-  width: 30px;
-  padding: 0;
-  cursor: pointer;
-  vertical-align: middle;
+  border: none;              /* Remove default button borders */
+  background: $colorGray600; /* Slightly lighter gray for buttons */
+  border-radius: 8px;        /* Rounded corners for buttons */
+  height: 30px;              /* Fixed height for buttons */
+  width: 30px;               /* Fixed width for square buttons */
+  padding: 0;                /* Remove default button padding */
+  cursor: pointer;           /* Indicate buttons are clickable */
+  vertical-align: middle;    /* Align buttons vertically with the value display */
 }
+
+/* Value display between the buttons */
 .value {
-  display: inline-block;
-  width: 60px;
-  text-align: center;
-  line-height: 30px;
-  vertical-align: middle;
+  display: inline-block;     /* Allow text to be sized and positioned */
+  width: 60px;               /* Fixed width to ensure consistent layout */
+  text-align: center;        /* Center the numeric value */
+  line-height: 30px;         /* Match height of buttons for vertical alignment */
+  vertical-align: middle;    /* Align text vertically with the buttons */
 }

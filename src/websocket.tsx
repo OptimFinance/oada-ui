@@ -1,3 +1,13 @@
+/**
+ * WebSocket Provider Module
+ * 
+ * Manages WebSocket connection for real-time communication:
+ * - Handles connection lifecycle
+ * - Manages automatic reconnection
+ * - Processes messages and notifications
+ * - Implements heartbeat mechanism
+ */
+
 import { useState } from 'react'
 import { createContext, FC, ReactNode } from "react";
 import { wsUrl } from './config.local';
@@ -5,10 +15,18 @@ import { isJsonRpcNotif } from './JsonRpc';
 import { useAppDispatch, useAppSelector } from './store/hooks';
 import { isRewardAccounts, setRewardAccounts, selectWallet, sendWalletConnectWsNotif } from './store/slices/walletSlice';
 
+/** WebSocket context type for sharing WebSocket instance */
 type WebsocketContextType = WebSocket;
 
+/** React context for WebSocket instance */
 export const WebsocketContext = createContext<WebsocketContextType | null>(null);
 
+/**
+ * WebSocket Provider Component
+ * 
+ * Manages WebSocket connection and provides it to child components.
+ * Handles connection lifecycle, reconnection, and message processing.
+ */
 const WebsocketProvider: FC<{ children: ReactNode }> = ({ children }) => {
   const wallet = useAppSelector(selectWallet)
   const url = `${wsUrl}`
@@ -20,6 +38,7 @@ const WebsocketProvider: FC<{ children: ReactNode }> = ({ children }) => {
   console.log('WebsocketProvider')
   console.log(url)
 
+  // Handle successful connection
   console.log('WebsocketAddOpen')
   ws.addEventListener('open', (event) => {
     console.log('WebsocketOpen')
@@ -27,6 +46,7 @@ const WebsocketProvider: FC<{ children: ReactNode }> = ({ children }) => {
     if (wallet !== null) {
       sendWalletConnectWsNotif(ws, wallet.address)
     }
+    // Set up heartbeat mechanism
     const timer = setInterval(function() {
       console.log('WebsocketPing')
       if (ws.readyState === WebSocket.OPEN) {
@@ -37,6 +57,8 @@ const WebsocketProvider: FC<{ children: ReactNode }> = ({ children }) => {
       }
     }, 30000)
   })
+
+  // Handle connection closure
   console.log('WebsocketAddClose')
   ws.addEventListener('close', (event) => {
     console.log('WebsocketClose')
@@ -45,6 +67,8 @@ const WebsocketProvider: FC<{ children: ReactNode }> = ({ children }) => {
       setReconnectToggle(!reconnectToggle)
     }, 5000)
   })
+
+  // Handle connection errors
   console.log('WebsocketAddError')
   ws.addEventListener('error', (event) => {
     const data = event
@@ -54,6 +78,8 @@ const WebsocketProvider: FC<{ children: ReactNode }> = ({ children }) => {
       setReconnectToggle(!reconnectToggle)
     }, 5000)
   })
+
+  // Handle incoming messages
   console.log('WebsocketAddMessage')
   ws.addEventListener('message', (event) => {
     const data = event.data

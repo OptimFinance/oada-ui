@@ -1,202 +1,252 @@
+/**
+ * Card Component Styling
+ * 
+ * SCSS module that defines the styling for the Card component - a container for
+ * displaying related content with a consistent visual style.
+ * Includes styles for card borders, headers, content sections, and interactive elements.
+ */
+
+/* Import project variables (colors, spacing, etc.) */
 @import "src/assets/variables";
 
+/* Gradient border styling for cards */
 .cardBorder {
-  border-radius: 12px;
-  border: double 2px transparent;
-  background-origin: border-box;
-  background-clip: content-box, border-box;
-  margin-bottom: 16px;
-  transition: 0.4s;
+  border-radius: 12px;                /* Rounded corners */
+  border: double 2px transparent;      /* Transparent double border for gradient effect */
+  background-origin: border-box;       /* Include border in background */
+  background-clip: content-box, border-box; /* Clip background differently for content vs border */
+  margin-bottom: 16px;                 /* Space between stacked cards */
+  transition: 0.4s;                    /* Smooth transition for hover effects */
 
+  /* Hover effect - gradient border */
   &:hover {
     background: linear-gradient(#15151E, #15151E) padding-box, linear-gradient(200deg, #9792E9, #2A54EB) border-box;
   }
 }
-.dangerBorder{
-  border: 2px solid $colorRed;
+
+/* Danger/error state border styling */
+.dangerBorder {
+  border: 2px solid $colorRed;         /* Red border for error/danger state */
+  
+  /* Hover effect - replace red border with gradient */
   &:hover {
     border: double 2px transparent;
     background: linear-gradient(#15151E, #15151E) padding-box, linear-gradient(200deg, #9792E9, #2A54EB) border-box;
   }
 }
 
+/* Main card content container */
 .cardWrapper {
+  /* Subtle radial gradient background for depth */
   background: radial-gradient(86.72% 63.17% at 3.74% 100%, rgba(44, 56, 75, 0.3) 0%, #1A1A25 100%) padding-box;
-  border-radius: 12px;
-  padding: $gapML;
+  border-radius: 12px;                 /* Rounded corners */
+  padding: $gapML;                     /* Internal padding */
 
+  /* Responsive adjustment for mobile */
   @media only screen and (max-width: $breakpointPhone) {
-    width: 100%;
+    width: 100%;                       /* Full width on mobile */
   }
 }
 
+/* Card header section */
 .cardHeader {
-  display: flex;
-  justify-content: space-between;
-  width: 100%;
-  margin-bottom: 30px;
-  padding-left: 40px;
-  position: relative;
+  display: flex;                       /* Horizontal layout */
+  justify-content: space-between;      /* Space items between left and right */
+  width: 100%;                         /* Full width */
+  margin-bottom: 30px;                 /* Space below header */
+  padding-left: 40px;                  /* Left padding for icon */
+  position: relative;                  /* For absolute positioning of icon */
 
+  /* Base positioning for the icon */
   &:before {
-    left: 0;
-    top: 3px;
-    position: absolute;
+    left: 0;                           /* Align icon to left */
+    top: 3px;                          /* Slight offset from top */
+    position: absolute;                /* Position icon absolutely */
   }
 
+  /* Cardano icon variant */
   &.cardano {
     &:before {
-      content: url("../../assets/icons/circle-card.svg");
+      content: url("../../assets/icons/circle-card.svg"); /* Cardano icon */
     }
   }
 
+  /* Diamond icon variant */
   &.diamond {
     &:before {
-      content: "";
+      content: "";                     /* Empty content for background image approach */
       display: block;
-      width: 34px;
+      width: 34px;                     /* Fixed icon size */
       height: 34px;
-      background-size: 34px 34px;
-      background-image: url("../../assets/icons/diamond-512.svg");
+      background-size: 34px 34px;      /* Ensure background image fits exactly */
+      background-image: url("../../assets/icons/diamond-512.svg"); /* Diamond icon */
       background-repeat: no-repeat;
       // content: url("../../assets/icons/diamond-512.svg");
     }
   }
 
+  /* Sphere icon variant */
   &.sphere {
     &:before {
-      content: "";
+      content: "";                     /* Empty content for background image approach */
       display: block;
-      width: 34px;
+      width: 34px;                     /* Fixed icon size */
       height: 34px;
-      background-size: 34px 34px;
-      background-image: url("../../assets/icons/sphere-512.svg");
+      background-size: 34px 34px;      /* Ensure background image fits exactly */
+      background-image: url("../../assets/icons/sphere-512.svg"); /* Sphere icon */
       background-repeat: no-repeat;
       // content: url("../../assets/icons/sphere-512.svg");
     }
   }
 }
 
+/* Card header label (smaller text above value) */
 .cardHeaderLabel {
-  color: $colorOptimGray200;
-  font-size: $fontS;
-  font-weight: $regular;
-  padding-bottom: $gapXxxs;
+  color: $colorOptimGray200;           /* Muted gray color */
+  font-size: $fontS;                   /* Smaller font size */
+  font-weight: $regular;               /* Regular weight */
+  padding-bottom: $gapXxxs;            /* Small space below label */
 }
 
+/* Card header value (main text) */
 .cardHeaderValue {
-  max-width: 9em;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  overflow: hidden;
+  max-width: 9em;                     /* Limit width to avoid layout issues */
+  white-space: nowrap;                /* Keep on one line */
+  text-overflow: ellipsis;            /* Show ellipsis for overflow */
+  overflow: hidden;                   /* Hide overflow */
 }
 
+/* Verified value styling */
 .cardHeaderValueVerified {
+  /* Currently empty, may be for future styling */
 }
 
+/* Rate/percentage styling in header */
 .cardHeaderRate {
-  font-size: $fontM;
+  font-size: $fontM;                  /* Medium font size */
 }
 
+/* Column in card header */
 .cardHeaderCol {
+  /* Right alignment for second column */
   &:nth-child(2) {
     text-align: right;
   }
 }
 
+/* Container for buttons */
 .buttonsWrapper {
-  display: flex;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  width: 100%;
-  margin-top: 30px;
+  display: flex;                      /* Horizontal layout */
+  justify-content: space-between;     /* Evenly space buttons */
+  flex-wrap: wrap;                    /* Allow wrapping on small screens */
+  width: 100%;                        /* Full width */
+  margin-top: 30px;                   /* Space above buttons */
 }
 
+/* List of details/specifications */
 .detailsList {
-  margin: 30px 0 0;
+  margin: 30px 0 0;                   /* Space above list */
 }
 
+/* Individual detail item */
 .detailsListItem {
-  display: flex;
-  justify-content: space-between;
-  font-weight: $regular;
-  font-size: $fontS;
-  margin-bottom: 14px;
+  display: flex;                      /* Horizontal layout */
+  justify-content: space-between;     /* Label on left, value on right */
+  font-weight: $regular;              /* Regular font weight */
+  font-size: $fontS;                  /* Smaller font size */
+  margin-bottom: 14px;                /* Space between items */
 
+  /* Remove margin from last item */
   &:last-child {
     margin-bottom: 0;
   }
 }
 
+/* Detail name/label styling */
 .detailName {
-  color: $colorOptimGray200;
-  display: flex;
-  align-items: center;
+  color: $colorOptimGray200;          /* Muted gray color */
+  display: flex;                      /* For alignment with icons */
+  align-items: center;                /* Vertical center alignment */
 }
 
+/* Detail value styling */
 .detailValue {
-  color: $colorBaseWhite;
+  color: $colorBaseWhite;             /* White color for values */
 
+  /* Green variation for positive values */
   &.green {
     color: $colorGreen;
   }
   
+  /* Red variation for negative/error values */
   &.red {
     color: $colorError700;
   }
 }
 
+/* Copyable detail value */
 .detailCopy {
-  color: $colorBaseWhite;
-  cursor: pointer;
+  color: $colorBaseWhite;             /* White text */
+  cursor: pointer;                    /* Pointer cursor to indicate clickable */
 
+  /* Copy icon */
   &:after {
     display: inline-block;
-    margin-left: 5px;
+    margin-left: 5px;                /* Space between text and icon */
     position: relative;
-    top: 2px;
-    content: url("../../assets/icons/copyID.svg");
+    top: 2px;                        /* Slight vertical adjustment */
+    content: url("../../assets/icons/copyID.svg"); /* Copy icon */
   }
 }
 
+/* Progress bar background */
 .colorLine {
-  background: #3B3B44;
-  width: 100%;
-  height: 4px;
+  background: #3B3B44;                /* Gray background */
+  width: 100%;                        /* Full width */
+  height: 4px;                        /* Thin line */
 }
 
+/* Progress bar fill */
 .colorLineCurrent {
-  height: 100%;
-  background: linear-gradient(90deg, #24FF96 0%, #4BFFC9 100%);
+  height: 100%;                       /* Fill full height */
+  background: linear-gradient(90deg, #24FF96 0%, #4BFFC9 100%); /* Green gradient */
 
+  /* Violet variation */
   &.violet {
-    background: linear-gradient(90deg, #2A54EB 0%, #9C95E9 100%);
+    background: linear-gradient(90deg, #2A54EB 0%, #9C95E9 100%); /* Purple gradient */
   }
 }
 
+/* Horizontal divider line */
 .separator {
-  height: 1px;
-  width: 100%;
-  background: $colorShade90;
+  height: 1px;                        /* Thin line */
+  width: 100%;                        /* Full width */
+  background: $colorShade90;          /* Subtle gray color */
 }
-.detailsButton {
-  position: absolute;
-  right: 0;
-  top: 0;
-  display: none;
 
+/* Details toggle button */
+.detailsButton {
+  position: absolute;                 /* Absolute positioning */
+  right: 0;                           /* Align to right */
+  top: 0;                             /* Align to top */
+  display: none;                      /* Hidden by default */
+
+  /* Hover effect for SVG elements */
   &:hover {
     svg * {
-      fill: $colorBaseWhite;
+      fill: $colorBaseWhite;          /* White fill on hover */
     }
   }
+  
+  /* Show button when parent is hovered */
   &.isHover {
     display: inline-flex;
   }
 }
 
+/* Arrow icon inside button */
 .buttonArrowIcon {
-  position: relative;
-  top: 3px;
-  left: 4px;
+  position: relative;                 /* Relative positioning for adjustments */
+  top: 3px;                           /* Vertical adjustment */
+  left: 4px;                          /* Horizontal adjustment */
 }

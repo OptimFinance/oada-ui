@@ -1,19 +1,44 @@
+/**
+ * FAQ Section Styles
+ * 
+ * Defines the layout and styling for the main FAQ section container.
+ * Uses a responsive grid layout for FAQ cards and maintains consistent
+ * spacing and typography throughout the section.
+ * 
+ * Layout Features:
+ * - Centered container with max-width
+ * - Responsive grid for FAQ cards
+ * - Consistent vertical spacing
+ * - Standardized typography
+ * 
+ * Uses design tokens from variables.scss for consistent
+ * spacing, breakpoints, and typography.
+ */
+
 @import "src/assets/variables";
 
+// Main FAQ section container
+// Centers content and provides consistent vertical spacing
 .container {
   max-width: 1024px;
   margin: auto;
   padding: 79px 0;
-.wrapper {
-  width: 100%;
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(330px, 1fr));
-  gap: $gapS;
-}
-.heading{
-  font-size: 20px;
-  font-weight: 600;
-  line-height: 30px;
-  padding: 60px 0;
-}
+
+  // Grid container for FAQ cards
+  // Uses auto-fit for responsive layout with minimum card width
+  .wrapper {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(330px, 1fr));
+    gap: $gapS;  // Standard small gap from design system
+  }
+
+  // Section heading styles
+  // Uses standardized typography settings
+  .heading {
+    font-size: 20px;
+    font-weight: 600;
+    line-height: 30px;
+    padding: 60px 0;
+  }
 }

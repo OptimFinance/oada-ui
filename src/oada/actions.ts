@@ -1,3 +1,12 @@
+/**
+ * OADA Protocol Redux Actions and State Management
+ * 
+ * This file implements the core Redux actions and state management for the OADA protocol,
+ * including transaction handling, staking operations, auction bidding, and protocol interactions.
+ * It provides a comprehensive set of async thunks for interacting with the OADA smart contracts
+ * on the Cardano blockchain.
+ */
+
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { BasicResponse, FailResponse } from '../utils';
 import { AppDispatch, RootState, Services } from '../store/index';
@@ -15,9 +24,19 @@ import { addressToStakeAddress, relativeEpochToAbsoluteEpoch } from 'src/utils';
 import { bidIdToTxOutRef } from './view';
 import {getUtxos} from 'src/store/slices/walletSlice';
 
+/**
+ * JSON BigInt Configuration
+ * Configures JSON handling to properly manage BigInt values in protocol interactions
+ */
 const JSONBigInt = makeJSONBigInt({ useNativeBigInt: true, alwaysParseAsBig: true, constructorAction: 'preserve' })
 const Json = JSONBigInt
 
+/**
+ * OADA Protocol State Interface
+ * Defines the structure of the Redux state for OADA protocol actions
+ * Includes responses from various protocol operations like buying, staking,
+ * and auction interactions
+ */
 type OadaState = {
   buyOadaResponse: BasicResponse<string> | undefined,
   stakeOadaResponse: BasicResponse<string> | undefined,
@@ -34,6 +53,10 @@ type OadaState = {
   getOptimizToOptimInfoResponse: BasicResponse<OptimizToOptimInfo> | undefined,
 }
 
+/**
+ * Initial Redux State
+ * Sets up the initial state for all OADA protocol actions with undefined responses
+ */
 const initialState: OadaState = {
   buyOadaResponse: undefined,
   stakeOadaResponse: undefined,
@@ -50,6 +73,11 @@ const initialState: OadaState = {
   getOptimizToOptimInfoResponse: undefined,
 }
 
+/**
+ * OADA Actions Redux Slice
+ * Creates a Redux slice for managing OADA protocol actions
+ * Handles state updates for all protocol operations
+ */
 export const oadaActionsSlice = createSlice({
   name: 'oada-actions',
   initialState,
@@ -134,10 +162,21 @@ export const oadaActionsSlice = createSlice({
 
 export const oadaReducer = oadaActionsSlice.reducer
 
+/**
+ * Redux Selectors
+ * Provide access to specific parts of the OADA protocol state
+ */
+
+/**
+ * Selects the buy OADA transaction response from state
+ */
 export const selectBuyOadaResponse = (state: RootState): BasicResponse<string> | undefined => {
   return state.oadaActions.buyOadaResponse
 }
 
+/**
+ * Selects the stake OADA transaction response from state
+ */
 export const selectStakeOadaResponse = (state: RootState): BasicResponse<string> | undefined => {
   return state.oadaActions.stakeOadaResponse
 }
@@ -269,6 +308,11 @@ export const selectOptimizToOptimInfo = (state: RootState): OptimizToOptimInfo |
   }
 }
 
+/**
+ * Wallet UTxO Management
+ * Retrieves and processes UTxOs from the connected wallet
+ * Handles collateral and virtual wallet state management
+ */
 const getWalletUtxos = async (wallet: UITypes.Wallets.Wallet): Promise<[UTxO[], string]> => {
   const { utxos, collateralUtxos } = await getUtxos(wallet)
   const collateralUtxoTxOutRefs = collateralUtxos.map(lucidToGYTxOutRef)
@@ -278,6 +322,11 @@ const getWalletUtxos = async (wallet: UITypes.Wallets.Wallet): Promise<[UTxO[], 
   return [mostRecentUtxos, userChangeAddress]
 }
 
+/**
+ * Transaction Recipe Processing
+ * Handles the building, signing, and submission of transactions
+ * Manages virtual wallet state updates after successful transactions
+ */
 const getRecipeBuildSendTx = async (
   utxos: UTxO[],
   changeAddress: string,
@@ -346,8 +395,11 @@ const getRecipeBuildSendTx = async (
   return signedTxResponse
 }
 
-// T = [0, 100]
-// TODO: use Decimal.js so we can do these this more accurately
+/**
+ * Clearing Rate Calculation
+ * Implements the sigmoid function for calculating clearing rates
+ * T parameter represents time and should be in range [0, 100]
+ */
 const calcClearingRate = (baseRate: Big, projectedRate: Big, sigmoidScalar: Big, sr: Big, r: Big, t: Big) => {
   const t_centered = t.sub(50)
   const t_normed = t.div(100)
@@ -366,14 +418,30 @@ const calcClearingRate = (baseRate: Big, projectedRate: Big, sigmoidScalar: Big,
   return clearingRate
 }
 
-// bidApr is 1/10 of a percent
+/**
+ * Bid Amount to Requested Size Conversion
+ * Converts a bid amount to the requested stake size based on the APR
+ * @param bidAmount The amount being bid
+ * @param bidApr The annual percentage rate in tenths of a percent
+ * @returns The calculated requested stake size
+ */
 export const bidAmountToRequestedSize = (bidAmount: Big, bidApr: Big) => {
   return bidAmount.mul(1000).mul(73).div(bidApr)
 }
 
-// binary search
-// bidApr is 1/10 of a percent
-// returns clearing rate ~ bidApr
+/**
+ * Bid Amount to Clearing Rate Calculation
+ * Performs binary search to find the clearing rate that matches the bid APR
+ * @param bidAmount Amount being bid
+ * @param sr Staked reserves
+ * @param r Total reserves
+ * @param t Time parameter [0-100]
+ * @param limit Maximum iterations for binary search
+ * @param initMinBidApr Initial minimum bid APR
+ * @param initMaxBidApr Initial maximum bid APR
+ * @param initBidApr Initial bid APR
+ * @returns Calculated clearing rate
+ */
 export const bidAmountToClearingRate = (
   bidAmount: Big, sr: Big, r: Big, t: Big, limit: number, initMinBidApr: Big, initMaxBidApr: Big, initBidApr: Big
 ) => {
@@ -638,6 +706,11 @@ type StakeAuctionBidRequest = {
   stakeAddressBech32: string
 }
 
+/**
+ * Stake Auction Bid Action
+ * Async thunk for placing bids in the stake auction
+ * Handles bid validation, transaction creation, and submission
+ */
 export const stakeAuctionBid = createAsyncThunk<
   BasicResponse<string>,
   StakeAuctionBidRequest,
@@ -693,10 +766,19 @@ export const stakeAuctionBid = createAsyncThunk<
   }
 )
 
+/**
+ * Cancel Stake Auction Bid Request Interface
+ * Defines the structure for canceling auction bid requests
+ */
 type CancelStakeAuctionBidRequest = {
   bidId: string,
 }
 
+/**
+ * Cancel Stake Auction Bid Action
+ * Async thunk for canceling existing stake auction bids
+ * Handles bid cancellation and transaction submission
+ */
 export const cancelStakeAuctionBid = createAsyncThunk<
   BasicResponse<string>,
   CancelStakeAuctionBidRequest,
@@ -743,10 +825,19 @@ export const cancelStakeAuctionBid = createAsyncThunk<
   }
 )
 
+/**
+ * Cancel Stake Order Request Interface
+ * Defines the structure for canceling stake order requests
+ */
 type CancelStakeOrderRequest = {
   orderId: string,
 }
 
+/**
+ * Cancel Stake Order Action
+ * Async thunk for canceling existing stake orders
+ * Handles order cancellation and transaction submission
+ */
 export const cancelStakeOrder = createAsyncThunk<
   BasicResponse<string>,
   CancelStakeOrderRequest,
@@ -793,6 +884,10 @@ export const cancelStakeOrder = createAsyncThunk<
   }
 )
 
+/**
+ * Stake Auction Bid View Interface
+ * Defines the structure for viewing stake auction bid information
+ */
 export type StakeAuctionBidView = {
   txOutRef: string,
   assetClass: string,
@@ -803,6 +898,10 @@ export type StakeAuctionBidView = {
   stakeAddressBech32: string,
 }
 
+/**
+ * Staking AMO View Interface
+ * Defines the structure for viewing Automated Market Operations (AMO) staking information
+ */
 export type StakingAmoView = {
   odaoFeeBps: number,
   odaoSoada: number,
@@ -811,18 +910,30 @@ export type StakingAmoView = {
   soadaLimit: number
 }
 
+/**
+ * Batch Stake View Interface
+ * Defines the structure for viewing batch staking information
+ */
 export type BatchStakeView = {
   adaAmount: number,
   oadaAmount: number,
   soadaAmount: number
 }
 
+/**
+ * Stable Pool View Interface
+ * Defines the structure for viewing stable pool information
+ */
 export type StablePoolView = {
   stablePoolBaseAmount: number
   stablePoolOadaAmount: number
   stablePoolCircLpAmount: number
 }
 
+/**
+ * OADA Stake Order View Interface
+ * Defines the structure for viewing OADA stake order information
+ */
 export type OadaStakeOrderView = {
   txOutRef: string
   oadaAmount: number
@@ -830,6 +941,10 @@ export type OadaStakeOrderView = {
   returnAddressBech32: string
 }
 
+/**
+ * OADA Unstake Order View Interface
+ * Defines the structure for viewing OADA unstake order information
+ */
 export type OadaUnstakeOrderView = {
   txOutRef: string
   soadaAmount: number
@@ -837,6 +952,10 @@ export type OadaUnstakeOrderView = {
   returnAddressBech32: string
 }
 
+/**
+ * OADA Frontend Info Interface
+ * Comprehensive interface for frontend display of OADA protocol information
+ */
 export type OadaFrontendInfo = {
   baseAssetClass: string,
   oadaAssetClass: string,
@@ -857,6 +976,11 @@ export type OadaFrontendInfo = {
   ownerBidViews: StakeAuctionBidView[],
 }
 
+/**
+ * Get OADA Frontend Info Action
+ * Async thunk for retrieving comprehensive OADA protocol information
+ * Includes staking data, pool information, and user-specific views
+ */
 export const getOadaFrontendInfo = createAsyncThunk<
   BasicResponse<OadaFrontendInfo>,
   void,
@@ -900,6 +1024,10 @@ export const getOadaFrontendInfo = createAsyncThunk<
   }
 )
 
+/**
+ * Get Stake Lock Historic Volume Action
+ * Async thunk for retrieving historical staking volume data
+ */
 export const getStakeLockHistoricVolume = createAsyncThunk<
   BasicResponse<number>,
   void,
@@ -931,12 +1059,18 @@ export const getStakeLockHistoricVolume = createAsyncThunk<
   }
 )
 
-
+/**
+ * sOADA Historical Return Interface
+ * Defines the structure for historical sOADA return data by epoch
+ */
 export type SoadaHistoricalReturn = {
   [epoch: string]: { "numerator": number, "denominator": number }
 }
 
-
+/**
+ * Get sOADA Historical Return Action
+ * Async thunk for retrieving historical sOADA return data
+ */
 export const getSoadaHistoricalReturn = createAsyncThunk<
   BasicResponse<SoadaHistoricalReturn>,
   void,
@@ -968,10 +1102,18 @@ export const getSoadaHistoricalReturn = createAsyncThunk<
   }
 )
 
+/**
+ * Stake Auction Volume Interface
+ * Defines the structure for stake auction volume data by timeframe
+ */
 export type StakeAuctionVolume = {
   [timeframe: string]: number
 }
 
+/**
+ * Get Stake Auction Volume Action
+ * Async thunk for retrieving stake auction volume data across different timeframes
+ */
 export const getStakeAuctionVolume = createAsyncThunk<
   BasicResponse<StakeAuctionVolume>,
   void,
@@ -1005,53 +1147,65 @@ export const getStakeAuctionVolume = createAsyncThunk<
   }
 )
 
+/**
+ * Token Interface
+ * Defines the structure for Cardano native tokens
+ */
 type Token = {
   policyId: string,
   tokenName: string,
 }
 
-type OadaGeneralInfo =
-  {
-    networkId: string
-    , adminToken: Token
-    , feeClaimerToken: Token
-    , baseAssetClass: string
-    , oadaToken: Token
-    , soadaToken: Token
-    , feeClaimRuleWhitelistNft: Token
-    , depositRuleNft: Token
-    , oadaStakeRuleNft: Token
-    , soadaStakeRuleNft: Token
-    , controllerWhitelistNft: Token
-    , stakingAmoNft: Token
-    , dexStrategyWhitelistNft: Token
-    , dexStrategyConfigWhitelistNft: Token
-    , dexStrategyConfigWhitelistTxOutRef: string
-    , dexStrategyRuleNft: Token
-    , maxLpTokenAmount: bigint
-    , depositGuardNum: bigint
-    , depositGuardDen: bigint
-    , collateralAmoNft: Token
-    , collateralAmoTxOutRef: string
-    , collateralAmoAmount: bigint
-    , depositTxOutRefs: string
-    , depositsAmount: bigint
-    , unlockableStakeLocksTxOutRefs: string
-    , unlockableStakeLocksAmount: bigint
-    , lockedStakeLocksTxOutRefs: string
-    , lockedStakeLocksAmount: bigint
-    , dexStrategyNft: Token
-    , dexStrategyTxOutRef: string
-    , dexStrategyAmount: bigint
-    , stablePoolNft: Token
-    , stablePoolTxOutRef: string
-    , stablePoolAmount: bigint
-    , stablePoolLpToken: Token
-    , amplCoeff: bigint
-    , lpFeeNum: bigint
-    , protocolFeeNum: bigint
-  }
+/**
+ * OADA General Info Interface
+ * Comprehensive interface for OADA protocol configuration and state
+ * Includes network parameters, token configurations, and protocol settings
+ */
+type OadaGeneralInfo = {
+  networkId: string
+  , adminToken: Token
+  , feeClaimerToken: Token
+  , baseAssetClass: string
+  , oadaToken: Token
+  , soadaToken: Token
+  , feeClaimRuleWhitelistNft: Token
+  , depositRuleNft: Token
+  , oadaStakeRuleNft: Token
+  , soadaStakeRuleNft: Token
+  , controllerWhitelistNft: Token
+  , stakingAmoNft: Token
+  , dexStrategyWhitelistNft: Token
+  , dexStrategyConfigWhitelistNft: Token
+  , dexStrategyConfigWhitelistTxOutRef: string
+  , dexStrategyRuleNft: Token
+  , maxLpTokenAmount: bigint
+  , depositGuardNum: bigint
+  , depositGuardDen: bigint
+  , collateralAmoNft: Token
+  , collateralAmoTxOutRef: string
+  , collateralAmoAmount: bigint
+  , depositTxOutRefs: string
+  , depositsAmount: bigint
+  , unlockableStakeLocksTxOutRefs: string
+  , unlockableStakeLocksAmount: bigint
+  , lockedStakeLocksTxOutRefs: string
+  , lockedStakeLocksAmount: bigint
+  , dexStrategyNft: Token
+  , dexStrategyTxOutRef: string
+  , dexStrategyAmount: bigint
+  , stablePoolNft: Token
+  , stablePoolTxOutRef: string
+  , stablePoolAmount: bigint
+  , stablePoolLpToken: Token
+  , amplCoeff: bigint
+  , lpFeeNum: bigint
+  , protocolFeeNum: bigint
+}
 
+/**
+ * Get OADA General Info Action
+ * Async thunk for retrieving comprehensive protocol configuration and state
+ */
 export const getOadaGeneralInfo = createAsyncThunk<
   BasicResponse<OadaGeneralInfo>,
   void,
@@ -1091,10 +1245,19 @@ export const getOadaGeneralInfo = createAsyncThunk<
 )
 
 // Optimiz Locks
+/**
+ * Unlock Optimiz Request Interface
+ * Defines the structure for Optimiz token unlock requests
+ */
 type UnlockOptimizRequest = {
   optimizLockId: string,
 }
 
+/**
+ * Unlock Optimiz Action
+ * Async thunk for unlocking Optimiz tokens
+ * Handles transaction creation and submission for token unlocking
+ */
 export const unlockOptimiz = createAsyncThunk<
   BasicResponse<string>,
   UnlockOptimizRequest,
@@ -1142,6 +1305,10 @@ export const unlockOptimiz = createAsyncThunk<
   }
 )
 
+/**
+ * Optimiz Lock View Interface
+ * Defines the structure for viewing Optimiz lock information
+ */
 export type OptimizLockView = {
   txOutRef: string,
   oadaAmount: number,
@@ -1155,10 +1322,19 @@ export type OptimizLockView = {
   ownerPkh: string
 }
 
+/**
+ * Optimiz to Optim Info Interface
+ * Defines the structure for Optimiz to Optim conversion information
+ */
 export type OptimizToOptimInfo = {
   ownerOptimizLockViews: OptimizLockView[]
 }
 
+/**
+ * Get Optimiz to Optim Info Action
+ * Async thunk for retrieving Optimiz to Optim conversion information
+ * Includes lock views and conversion parameters
+ */
 export const getOptimizToOptimInfo = createAsyncThunk<
   BasicResponse<OptimizToOptimInfo>,
   void,
