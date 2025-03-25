@@ -1,3 +1,20 @@
+/**
+ * OADA Dashboard Component
+ * 
+ * This component provides a comprehensive dashboard for the OADA (Optimiz ADA) token ecosystem.
+ * It displays key metrics, user positions, yield opportunities, and integrates OptimizLock functionality.
+ * 
+ * Key features:
+ * - Total Value Locked (TVL) visualization with breakdown between OADA and sOADA
+ * - Volume statistics for stake auction activities
+ * - User position overview displaying balances across different OADA-related assets
+ * - Yield opportunities table with various options for earning with OADA tokens
+ * - Modal integration for OptimizLock and OptimizUnlock features
+ * 
+ * The dashboard polls for updates and recalculates various metrics to provide users
+ * with current information about the OADA ecosystem.
+ */
+
 import { Text } from "src/components/ui/typography";
 import { UserPositionsCard } from "../../positions-card";
 import { TvlChartData, TvlCard } from "../../tvl-card";
@@ -16,6 +33,12 @@ import {Tabs, TabsList, TabsTrigger} from "src/components/ui/tabs";
 import * as Optimiz from 'src/features/dAppHub/OptimizLock';
 import {VolumeCard, VolumeChartData} from "../../volume-card";
 
+/**
+ * Initial TVL chart data structure
+ * 
+ * Provides a template for the Total Value Locked chart showing
+ * the distribution between OADA and sOADA tokens
+ */
 const chartData: TvlChartData = [
   {
     name: "Total OADA",
@@ -31,6 +54,18 @@ const chartData: TvlChartData = [
   },
 ];
 
+/**
+ * OADA yield options configuration
+ * 
+ * Defines the various yield opportunities available in the OADA ecosystem:
+ * - sOADA staking (native yield)
+ * - Splash DEX liquidity provision (OADA-ADA pair)
+ * - WingRiders DEX liquidity provision (OADA-ADA pair)
+ * - OADA Lock for OPTIMiz conversion
+ * 
+ * Each option includes display information, APY (when available),
+ * and action buttons with appropriate links.
+ */
 const oada_yields: YieldOption[] = [
   {
     positionName: "sOADA",
@@ -77,31 +112,49 @@ const oada_yields: YieldOption[] = [
   },
 ];
 
+/**
+ * OADADashboard Component
+ * 
+ * Main dashboard component for the OADA ecosystem, displaying TVL,
+ * volume data, user positions, and yield opportunities.
+ * 
+ * @returns The complete OADA dashboard interface
+ */
 export const OADADashboard = () => {
   const navigate = useNavigate()
   const {hash} = useLocation()
   const dispatch = useAppDispatch()
+  
+  // Fetch initial data on component mount
   useEffect(() => {
     dispatch(getOadaFrontendInfo())
     dispatch(getSoadaHistoricalReturn())
     dispatch(getStakeAuctionVolume())
     dispatch(getStakeLockHistoricVolume())
   }, [dispatch])
+  
+  // Get data from Redux store
   const oadaFrontendInfo = useAppSelector(selectOadaFrontendInfo)
   const walletOadalet = useAppSelector(selectWalletOadaletAmount)
   const walletSoadalet = useAppSelector(selectWalletSoadaletAmount)
   const walletLp = useAppSelector(selectWalletOadaLpAmount)
+  
+  // Calculate pool statistics for LP position
   const circLp = Big(oadaFrontendInfo?.stablePoolView.stablePoolCircLpAmount || 1)
   const stablePoolStake = walletLp.div(circLp)
   const walletStablePoolBaseAmount = Big(oadaFrontendInfo?.stablePoolView.stablePoolBaseAmount || 0)
   const walletStablePoolOadaAmount = Big(oadaFrontendInfo?.stablePoolView.stablePoolOadaAmount || 0)
 
+  // Get sOADA APY for display
   const soadaApy = formatPercent(useAppSelector(selectSoadaApyMovingAverage()))
 
-  const optimToOada = 0.400338 //TODO
+  // Calculate OPTIMiz conversion APYs
+  const optimToOada = 0.400338 // OADA price in relation to OPTIMiz
   const optimizApys = Object.values(Optimiz.lockTypes).map(({ days, ratio }) => {
     return +Big(100).div(ratio).mul(365).div(days)
   })
+  
+  // Find min and max APYs for OPTIMiz locks
   const [minOptimizApy, maxOptimizApy] =
     optimizApys.reduce(([min, max]: [number | undefined, number | undefined], v) => {
       return [(!min || v < min) ? v : min, (!max || v > max) ? v : max]
@@ -109,21 +162,23 @@ export const OADADashboard = () => {
       [undefined, undefined]
     )
 
-    oada_yields.forEach(value => {
-      if (value.positionName === 'sOADA') {
-        value.apy = soadaApy || "-%"
-        value.tooltip = <>The 6-epoch simple moving average APY for staking OADA</>
-      }
-      if (value.positionName === 'OADA Lock' && minOptimizApy && maxOptimizApy) {
-        value.apy = `${formatDecimals(minOptimizApy * optimToOada, 2)} - ${formatDecimals(maxOptimizApy * optimToOada, 2)}%`
-        value.tooltip = <>
-          {`At OPTIM price of ${formatDecimals(optimToOada, 3)} ADA`}<br />
-          Higher price implies a higher APY, and a Lower price implies a lower APY<br />
-          Longer duration implies higher APY
-        </>
-      }
-    })
+  // Update yield options with current APY data
+  oada_yields.forEach(value => {
+    if (value.positionName === 'sOADA') {
+      value.apy = soadaApy || "-%"
+      value.tooltip = <>The 6-epoch simple moving average APY for staking OADA</>
+    }
+    if (value.positionName === 'OADA Lock' && minOptimizApy && maxOptimizApy) {
+      value.apy = `${formatDecimals(minOptimizApy * optimToOada, 2)} - ${formatDecimals(maxOptimizApy * optimToOada, 2)}%`
+      value.tooltip = <>
+        {`At OPTIM price of ${formatDecimals(optimToOada, 3)} ADA`}<br />
+        Higher price implies a higher APY, and a Lower price implies a lower APY<br />
+        Longer duration implies higher APY
+      </>
+    }
+  })
 
+  // Prepare user positions data for display
   const user_positions = [
     {
       positionName: "OADA",
@@ -149,6 +204,8 @@ export const OADADashboard = () => {
       currencyLogos: ["oada", "ada"],
     },
   ];
+  
+  // Calculate and update TVL data
   let totalValueLocked = 0
   if (oadaFrontendInfo) {
     totalValueLocked = oadaFrontendInfo.totalReserves
@@ -162,6 +219,7 @@ export const OADADashboard = () => {
     totalValueLocked /= 1000000
   }
 
+  // Prepare volume data for display
   const { intervals: stakeAuctionVolume, cumulativeVolume: stakeAuctionCumulatitveVolume } = useAppSelector(selectStakeAuctionVolumeData);
   const volumeData: VolumeChartData = stakeAuctionVolume ? [
     {
@@ -183,9 +241,12 @@ export const OADADashboard = () => {
       amount: stakeAuctionVolume['30D']
     },
   ] : []
+  
   return (
     <div className="grid">
       <CustomTitle title="OADA Dashboard" />
+      
+      {/* Cards section - TVL, Volume, User Positions */}
       <section className="py-8">
         <div className="grid fold:grid-cols-4 w-full max-w-[1128px] mx-auto gap-6">
           <TvlCard chartData={chartData.map(x => ({...x, value: +x.value}))} totalValueLocked={totalValueLocked} />
@@ -193,10 +254,14 @@ export const OADADashboard = () => {
           <UserPositionsCard userPositions={user_positions} />
         </div>
       </section>
+      
+      {/* OADA Yields section */}
       <section className="py-8">
         <div className="grid w-full max-w-[1128px] mx-auto gap-6">
           <Text size="large">OADA Yields</Text>
           <YieldsTable yieldOptions={oada_yields} />
+          
+          {/* OptimizLock/Unlock Modal */}
           <Modal open={hash.startsWith('#optimiz-')} onClose={() => navigate('/dashboard')} className="w-fit min-h-[600px] md:h-[60vh] w-[90vw] sm:w-[500px] flex flex-col items-center">
             <div className="w-[80%]">
               <Tabs

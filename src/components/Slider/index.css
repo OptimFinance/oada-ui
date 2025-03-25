@@ -1,46 +1,64 @@
+/**
+ * Slider Component Styling
+ * 
+ * CSS for the Slider component - a custom range input slider 
+ * with a styled track and draggable thumb.
+ * 
+ * This styling is designed for the react-slider library and
+ * customizes its appearance to match the application design system
+ * with a gradient track and distinct thumb control.
+ */
+
+/* Main container for the horizontal slider */
 .horizontal-slider {
-  width: 100%;
-  margin: auto;
-  height: 30px;
+  width: 100%;             /* Fill available width */
+  margin: auto;            /* Center the slider */
+  height: 30px;            /* Provide sufficient height for the slider elements */
 }
 
+/* Thumb element - the draggable handle on the slider */
 .thumb {
-  cursor: pointer;
-  position: absolute;
-  z-index: 100;
-  background: #8b8cea;
-  border: 1px solid #8b8cea;
-  border-radius: 100%;
-  height: 14px !important;
-  width: 14px !important;
-  display: block;
-  box-shadow: 0 0 2px 0 rgb(0 0 0 / 44%);
+  cursor: pointer;         /* Indicate that it's draggable */
+  position: absolute;      /* Position absolutely within the track */
+  z-index: 100;            /* Ensure thumb appears above track */
+  background: #8b8cea;     /* Purple background color */
+  border: 1px solid #8b8cea; /* Border matching background for smooth appearance */
+  border-radius: 100%;     /* Circular thumb */
+  height: 14px !important; /* Fixed height - important overrides library defaults */
+  width: 14px !important;  /* Fixed width - important overrides library defaults */
+  display: block;          /* Block display for proper sizing */
+  box-shadow: 0 0 2px 0 rgb(0 0 0 / 44%); /* Subtle shadow for depth */
 }
 
+/* Active state for the thumb when being dragged */
 .thumb.active {
-  background-color: #8b8cea;
+  background-color: #8b8cea; /* Same color, could be modified for active state */
 }
 
+/* Track element - the line that the thumb slides along */
 .track {
-  position: relative;
-  background: rgba(255, 255, 255, 0.16);
-  border-radius: 100px;
+  position: relative;      /* Positioning context for thumb */
+  background: rgba(255, 255, 255, 0.16); /* Semi-transparent white background */
+  border-radius: 100px;    /* Fully rounded ends */
 }
 
+/* Filled portion of the track (from start to thumb position) */
 .track.track-0 {
-  background-image: linear-gradient(to right, #2853eb, #9c95e9);
-  border-radius: 100px;
+  background-image: linear-gradient(to right, #2853eb, #9c95e9); /* Blue to purple gradient */
+  border-radius: 100px;    /* Fully rounded ends */
 }
 
+/* Specific styles for horizontal slider track position and size */
 .horizontal-slider .track {
-  top: 20px;
-  height: 4px;
+  top: 20px;               /* Position track vertically within slider container */
+  height: 4px;             /* Thin track height */
 }
 
+/* Specific styles for horizontal slider thumb position and appearance */
 .horizontal-slider .thumb {
-  top: 15px;
-  width: 10px;
-  outline: none;
-  height: 10px;
-  line-height: 38px;
+  top: 15px;               /* Vertical position to center on track */
+  width: 10px;             /* Width (note: overridden by !important rule above) */
+  outline: none;           /* Remove focus outline */
+  height: 10px;            /* Height (note: overridden by !important rule above) */
+  line-height: 38px;       /* Line height for potential text content */
 }

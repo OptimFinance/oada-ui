@@ -1,38 +1,53 @@
+/**
+ * Info Component Styling
+ * 
+ * SCSS module that defines the styling for the Info component - a tooltip/popup
+ * system that displays additional information when hovering over an icon.
+ * Supports different positioning options (right, top) for the popup.
+ */
+
+/* Import project variables (colors, spacing, etc.) */
 @import "src/assets/variables";
+
+/* Container for the info icon and popup */
 .container {
-  position: relative;
-  display: inline-block;
-  height: 16px;
-  vertical-align: middle;
-  cursor: pointer;
+  position: relative;           /* Needed for absolute positioning of the popup */
+  display: inline-block;        /* Allow the component to flow inline with text */
+  height: 16px;                 /* Fixed height to ensure consistent sizing */
+  vertical-align: middle;       /* Align with surrounding text */
+  cursor: pointer;              /* Pointer cursor to indicate interactivity */
 }
 
+/* Tooltip/popup styling */
 .popup {
-  display: block;
-  position: absolute;
-  text-align: center;
-  z-index: 10;
-  background: $colorGray900;
-  border-radius: 12px;
-  border: 1px solid $colorBaseBlack;
-  padding: 1em;
-  width: 180px;
-  font-size: $fontS;
-  font-weight: normal;
-  color: $colorBaseWhite;
+  display: block;               /* Ensure popup is visible when active */
+  position: absolute;           /* Position relative to the container */
+  text-align: center;           /* Center the tooltip text */
+  z-index: 10;                  /* Ensure popup appears above other content */
+  background: $colorGray900;    /* Dark background for contrast */
+  border-radius: 12px;          /* Rounded corners */
+  border: 1px solid $colorBaseBlack; /* Subtle border */
+  padding: 1em;                 /* Internal spacing */
+  width: 180px;                 /* Fixed width for consistency */
+  font-size: $fontS;            /* Smaller font size for tooltip content */
+  font-weight: normal;          /* Regular font weight */
+  color: $colorBaseWhite;       /* White text for readability */
 
+  /* Position variant: appear to the right of the icon */
   &.right {
-    left: 25px;
-    top: -50%;
+    left: 25px;                 /* Offset from the left of container */
+    top: -50%;                  /* Vertically center the popup */
   }
 
+  /* Position variant: appear above the icon */
   &.top {
-    left: 50%;
-    transform: translate(-50%, -100%);
+    left: 50%;                  /* Center horizontally */
+    transform: translate(-50%, -100%); /* Adjust position to center and move above */
   }
 }
 
+/* Info icon styling */
 .icon {
-  fill: $colorOptimGray200;
-  margin-left: 5px;
+  fill: $colorOptimGray200;     /* Muted gray color for the icon */
+  margin-left: 5px;             /* Space between icon and preceding content */
 }

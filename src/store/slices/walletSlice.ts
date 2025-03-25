@@ -1,3 +1,19 @@
+/**
+ * Wallet Management Slice for Redux Store
+ * 
+ * This module implements a Redux slice for managing Cardano wallet state and interactions.
+ * It provides comprehensive wallet management including UTxO tracking, wallet connection,
+ * balance calculations, and WebSocket notifications for wallet events.
+ * 
+ * Key Features:
+ * - Wallet connection and disconnection management
+ * - UTxO tracking and virtual wallet support
+ * - Balance calculations for various tokens (ADA, OADA, sOADA, OPTIMiz)
+ * - WebSocket notifications for wallet events
+ * - Reward account management
+ * - CIP-30 compliant wallet API interactions
+ */
+
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import type { RootState, Services, ThunkAPI } from "../index";
 import { UITypes } from "../../types";
@@ -17,17 +33,27 @@ import { getLatestUtxosFromPersistedVirtualWalletUtxoMap, getMostRecentUtxosFrom
 import {selectOadaLpToken} from "src/oada/actions";
 import {filter, lucidUtxoToUtxo} from "src/utils";
 
+/**
+ * Represents a value in the Gimbalabs (GY) format
+ * Contains lovelace amount and optional asset class quantities
+ */
 export type GYValue = {
   lovelace: string,
   [assetClass: string]: string
 }
 
+/**
+ * Represents a reward account with associated payment credentials and value
+ */
 export type RewardAccount = {
   paymentPkh: string;
   distId: number;
   value: GYValue;
 };
 
+/**
+ * Interface defining the wallet state structure
+ */
 interface WalletState {
   wallet: UITypes.Wallets.Wallet | null,
   partialWallet: St.PartialWallet,
@@ -37,6 +63,9 @@ interface WalletState {
   rewardAccounts: RewardAccount[];
 }
 
+/**
+ * Initial state for the wallet slice
+ */
 const initialState: WalletState = {
   wallet: null,
   partialWallet: {
@@ -48,6 +77,11 @@ const initialState: WalletState = {
   rewardAccounts: [],
 };
 
+/**
+ * Converts a server-side value format to Lucid's asset format
+ * @param value - Server-side value representation
+ * @returns Lucid-compatible asset format
+ */
 export const serverValueToLucid = (value: Value): Lucid.Assets => {
   const o: Lucid.Assets = {
     lovelace: value.lovelace
@@ -59,6 +93,11 @@ export const serverValueToLucid = (value: Value): Lucid.Assets => {
   return o
 }
 
+/**
+ * Converts a server-side UTxO to Lucid's UTxO format
+ * @param serverUtxo - Server-side UTxO representation
+ * @returns Lucid-compatible UTxO format
+ */
 const serverUtxoToLucid = (serverUtxo: Utxo): Lucid.UTxO => {
   return {
     txHash: serverUtxo.utxoRef.txHash,
@@ -68,12 +107,12 @@ const serverUtxoToLucid = (serverUtxo: Utxo): Lucid.UTxO => {
   }
 }
 
-
-// NOTE: as long as a storage get and set happen within the
-// same callback/function/resulting callstack then we have no race
-// condition within a single tab. We DO have a race condition
-// across several tabs/windows, but I assume it's rare to the point
-// that no one will ever see it.
+/**
+ * Prunes and updates UTxO map with most recent UTxOs
+ * Handles both wallet and virtual UTxO management
+ * @param utxos - Array of Lucid UTxOs to process
+ * @returns Combined array of most recent UTxOs
+ */
 export const pruneAndMostRecentUtxos = (utxos: Lucid.UTxO[]) => {
   console.log('BEFORE GET WALLET UTXOS MAP')
   const walletUtxoMap = getWalletUtxoMap()
@@ -89,15 +128,27 @@ export const pruneAndMostRecentUtxos = (utxos: Lucid.UTxO[]) => {
   return lucidUtxos.concat(serverUtxos.map(serverUtxoToLucid))
 }
 
+/**
+ * Type guard for non-null values
+ */
 const isNotNull = <A>(a: A | null): a is A => {
   return a !== null
 }
 
+/**
+ * Structure representing wallet UTxOs including collateral
+ */
 type WalletUtxos = {
   utxos: LucidUtxo[],
   collateralUtxos: LucidUtxo[],
 }
 
+/**
+ * Retrieves UTxOs for a given wallet, including collateral UTxOs
+ * Handles CIP-30 wallet API compatibility
+ * @param storeWallet - Wallet to fetch UTxOs for
+ * @returns Promise resolving to wallet UTxOs and collateral
+ */
 export const getUtxos = async (storeWallet: Wallet): Promise<WalletUtxos> => {
   const cip30Api = walletApiByProviderByAddress?.[storeWallet.provider]?.[storeWallet.address]
   const getCollateral =
@@ -134,17 +185,29 @@ export const getUtxos = async (storeWallet: Wallet): Promise<WalletUtxos> => {
   }
 }
 
-
+/**
+ * Wallet management slice for Redux store
+ * Handles wallet state updates and interactions
+ */
 export const walletSlice = createSlice({
   name: 'wallet',
   initialState,
   reducers: {
+    /**
+     * Sets the fee address for the wallet
+     */
     setWalletFeeAddress: (state, action: PayloadAction<string | null>) => {
       state.feeAddress = action.payload;
     },
+    /**
+     * Toggles wallet selection dialog visibility
+     */
     toggleShowWalletSelect: (state) => {
       state.showWalletSelect = !state.showWalletSelect;
     },
+    /**
+     * Updates reward accounts for the wallet
+     */
     setRewardAccounts: (state, action: PayloadAction<RewardAccount[]>) => {
       state.rewardAccounts = action.payload;
       console.log("setRewardAccounts fulfilled");
@@ -185,16 +248,23 @@ export const { setWalletFeeAddress, toggleShowWalletSelect, setRewardAccounts } 
 export default walletSlice.reducer
 
 /** 
- * Global variable 
- * Gets updated only by selectWalletByProvider async thunk
- * TODO: Maybe we can just put this in the store.
+ * Global wallet API cache
+ * Maps provider names to address-specific wallet APIs
+ * Updated by setWalletByProvider thunk
  */
 export const walletApiByProviderByAddress: { [name: string]: { [address: string]: WalletApi } } = {}
 
+/**
+ * Parameters for wallet disconnection
+ */
 type DisconnectWalletParams = {
   ws: WebSocket | null,
 }
 
+/**
+ * Thunk for handling wallet disconnection
+ * Cleans up wallet state and sends WebSocket notification
+ */
 export const disconnectWalletThunk = createAsyncThunk<
   void,
   DisconnectWalletParams,
@@ -220,7 +290,10 @@ export const disconnectWalletThunk = createAsyncThunk<
   }
 )
 
-// TODO: we don't handle/catch possible errors
+/**
+ * Thunk for updating wallet UTxOs
+ * Handles both regular and virtual wallet UTxOs
+ */
 export const updateWalletUtxosThunk = createAsyncThunk<
   St.Utxo[],
   unknown,
@@ -242,11 +315,18 @@ export const updateWalletUtxosThunk = createAsyncThunk<
   }
 )
 
+/**
+ * Parameters for setting wallet by provider
+ */
 type SetWalletByProviderParams = {
   name: string,
   ws: WebSocket | null,
 }
 
+/**
+ * Thunk for setting wallet by provider
+ * Handles wallet selection and initialization
+ */
 export const setWalletByProvider = createAsyncThunk<
   UITypes.Wallets.Wallet | null,
   SetWalletByProviderParams,
@@ -266,8 +346,6 @@ export const setWalletByProvider = createAsyncThunk<
 
     lucid.selectWallet(walletApi)
 
-    // NOTE: now lucid contains the wallet api we used before
-    // and the wallet api is the raw api in the CIP (probably)
     const address = await lucid.wallet.address()
     sendWalletConnectWsNotif(ws, address)
 
@@ -285,15 +363,28 @@ export const setWalletByProvider = createAsyncThunk<
   }
 )
 
+/**
+ * Sends wallet connect notification via WebSocket
+ */
 export const sendWalletConnectWsNotif = (ws: WebSocket | null, address: string) => {
   sendWsWalletNotif(ws, 'ConnectWallet', address)
 }
 
+/**
+ * Sends wallet disconnect notification via WebSocket
+ */
 const sendDisconnectWalletWsNotif = async (ws: WebSocket | null, address: string) => {
   sendWsWalletNotif(ws, 'DisconnectWallet', address)
 }
 
+/**
+ * WebSocket notification method types
+ */
 type WalletNotifMethod = 'ConnectWallet' | 'DisconnectWallet'
+
+/**
+ * Generic function for sending wallet notifications via WebSocket
+ */
 const sendWsWalletNotif = (ws: WebSocket | null, method: WalletNotifMethod, address: string) => {
   const notif = makeJsonRpcNotif(method, {address})
   if (ws !== null) {
@@ -311,24 +402,39 @@ const sendWsWalletNotif = (ws: WebSocket | null, method: WalletNotifMethod, addr
   }
 }
 
+/**
+ * Custom error for non-existent wallet at provider
+ */
 class WalletAtProviderDoesNotExist extends Error {
   constructor(public wallet: Wallet) {
     super(wallet.provider + '.' + wallet.address)
     this.name = 'WalletAtProviderDoesNotExist'
   }
 }
+
+/**
+ * Custom error for non-existent wallet at address
+ */
 class WalletAtAddressDoesNotExist extends Error {
   constructor(public wallet: Wallet) {
     super(wallet.provider + '.' + wallet.address)
     this.name = 'WalletAtAddressDoesNotExist'
   }
 }
+
+/**
+ * Custom error for wallet not selected
+ */
 class WalletNotSelectedError extends Error {
   constructor(message: string = '') {
     super(message)
     this.name = 'WalletNotSelectedError'
   }
 }
+
+/**
+ * Custom error for address without payment credentials
+ */
 class AddressHasNoPaymentCredentialsError extends Error {
   constructor(message: string = '') {
     super(message)
@@ -336,11 +442,17 @@ class AddressHasNoPaymentCredentialsError extends Error {
   }
 }
 
+/**
+ * Gets wallet from store state
+ */
 export const getStoreWallet = (thunkAPI: ThunkAPI): Result<Wallet, WalletNotSelectedError> => {
   const wallet = thunkAPI.getState().wallet.wallet
   return Result.fromNullable(wallet, new WalletNotSelectedError())
 }
 
+/**
+ * Gets wallet provider API
+ */
 export const getWalletProvider = (
   storeWallet: Wallet
 ): Result<WalletApi, WalletAtProviderDoesNotExist | WalletAtAddressDoesNotExist> => {
@@ -349,32 +461,49 @@ export const getWalletProvider = (
     .chainR(walletByAddress => Result.fromNullable(walletByAddress[storeWallet.address], new WalletAtAddressDoesNotExist(storeWallet)))
 }
 
+/**
+ * Gets wallet fee address from store
+ */
 export const getWalletFeeAddress = (thunkAPI: ThunkAPI): string | null => {
   return thunkAPI.getState().wallet.feeAddress
 }
 
+/**
+ * Gets payment credential from wallet address
+ */
 export const getPaymentCredentialFromWallet = (wallet: Wallet): Result<Lucid.Credential, AddressHasNoPaymentCredentialsError> => {
   const paymentCredential = new Utils(lucid).getAddressDetails(wallet.address).paymentCredential
-
   return Result.fromNullable(paymentCredential, new AddressHasNoPaymentCredentialsError())
 }
 
 // SELECTORS
 
+/**
+ * Selectors for accessing wallet state
+ */
 export const selectPartialWallet: (state: RootState) => St.PartialWallet = (state: RootState) => state.wallet.partialWallet
 export const selectPartialWalletUtxos: (state: RootState) => St.Utxo[] = (state: RootState) => state.wallet.partialWallet.utxos
 export const selectWallet: (state: RootState) => (UITypes.Wallets.Wallet | null) = (state: RootState) => state.wallet.wallet
 export const selectShowWalletSelect: (state: RootState) => boolean = (state: RootState) => state.wallet.showWalletSelect
 
+/**
+ * Selects total lovelace amount in wallet
+ */
 export const selectWalletLovelaceAmount = (state: RootState): Big => {
   const utxos = state.wallet.partialWallet.utxos
   return sumAssets(utxos, 'lovelace')
 }
 
+/**
+ * Selects total ADA amount in wallet
+ */
 export const selectWalletAdaAmount = (state: RootState): Big => {
   return lovelaceToAda(selectWalletLovelaceAmount(state))
 }
 
+/**
+ * Sums assets across UTxOs for a given asset class
+ */
 export const sumAssets = (utxos: St.Utxo[], assetClass: string): Big => {
   let sum = Big(0)
   for (const utxo of utxos) {
@@ -385,6 +514,9 @@ export const sumAssets = (utxos: St.Utxo[], assetClass: string): Big => {
   return sum
 }
 
+/**
+ * Token-specific balance selectors
+ */
 export const selectWalletOadaletAmount = (state: RootState): Big => {
   const utxos = state.wallet.partialWallet.utxos
   const assetClass =  `${oadaNetwork.oadaPolicyId}${oadaNetwork.oadaTokenName}`
@@ -410,7 +542,9 @@ export const selectWalletOptimizAmount = (state: RootState): Big => {
   return assetClass ? sumAssets(utxos, assetClass) : Big(0)
 }
 
-
+/**
+ * Generic token balance selector
+ */
 export const selectWalletTokenCount = (currencySymbol: string, tokenName: string) => (state: RootState): Big => {
   const utxos = state.wallet.partialWallet.utxos
   const targetAssetName = currencySymbol + tokenName
@@ -429,14 +563,23 @@ export const selectWalletTokenCount = (currencySymbol: string, tokenName: string
 
 // UTILITY
 
+/**
+ * Converts lovelace to ADA
+ */
 export function lovelaceToAda(lovelace: Big): Big {
   return lovelace.div(Big(1_000_000))
 }
 
+/**
+ * Converts UTxO to string reference
+ */
 function utxoToUtxoRefString(utxo: St.Utxo): string {
   return utxo.txId + "#" + utxo.txIx.toString()
 }
 
+/**
+ * Type guards for reward accounts
+ */
 const isRewardAccount = (o: unknown): o is RewardAccount => {
   return typeof o === "object";
 };

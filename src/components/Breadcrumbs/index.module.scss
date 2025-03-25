@@ -1,20 +1,32 @@
+/**
+ * Breadcrumbs Styling
+ * 
+ * SCSS module for the Breadcrumbs component styling.
+ * Note: This is a legacy SCSS file - the component currently uses Tailwind classes in the JSX directly.
+ * This file may be used as a fallback or for reference.
+ */
+
+/* Import project variables (colors, spacing, etc.) */
 @import "src/assets/variables";
 
+/* Main container for the breadcrumbs navigation */
 .breadcrumbs {
-  display: flex;
-  margin-bottom: 20px;
+  display: flex;          /* Arrange breadcrumbs in a horizontal row */
+  margin-bottom: 20px;    /* Space below the breadcrumbs navigation */
 }
 
+/* Individual breadcrumb item styling */
 .breadcrumbsItem {
-  color: $colorOptimGray200;
-  position: relative;
-  padding-left: 26px;
-  margin-right: $gapMxs;
+  color: $colorOptimGray200;    /* Use muted gray color for breadcrumb text */
+  position: relative;           /* Needed for absolute positioning of the chevron icon */
+  padding-left: 26px;           /* Space for the chevron icon */
+  margin-right: $gapMxs;        /* Space between breadcrumb items */
 
+  /* Chevron icon using CSS pseudo-element */
   &:before {
-    position: absolute;
-    left: 0;
-    top: -1px;
-    content: url('./../../assets/icons/chevron-left.svg');
+    position: absolute;         /* Position the chevron relative to the breadcrumb item */
+    left: 0;                    /* Align chevron to the left */
+    top: -1px;                  /* Slight vertical adjustment for alignment */
+    content: url('./../../assets/icons/chevron-left.svg');  /* Use SVG as content */
   }
 }

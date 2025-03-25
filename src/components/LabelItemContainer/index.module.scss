@@ -1,6 +1,18 @@
+/**
+ * LabelItemContainer Component Styling
+ * 
+ * SCSS module for the LabelItemContainer component - a simple container
+ * that provides consistent styling for label elements within the UI.
+ * 
+ * This component helps maintain consistency in spacing and alignment
+ * for labeled content throughout the application.
+ */
+
+/* Main container element */
 .container {
+  /* Styling for label elements within the container */
   .label {
-    margin-bottom: 16px;
-    margin-left: 0px;
+    margin-bottom: 16px;    /* Space below the label before content */
+    margin-left: 0px;       /* Ensure label aligns with left edge */
   }
 }

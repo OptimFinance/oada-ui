@@ -1,9 +1,28 @@
+/**
+ * Network Configuration Module
+ * 
+ * This module handles network-specific configurations for:
+ * - Cardano network parameters (Mainnet/Preview)
+ * - OADA network settings
+ * - Network-specific explorer URLs and utilities
+ */
+
 import { cardanoNetwork } from './config.local';
 import * as Mainnet from './mainnet/network'
 import * as Preview from './preview/network'
 import { config as previewOadaConfig } from './preview/oada-config'
 import { config as mainnetOadaConfig } from './mainnet/oada-config'
 
+/**
+ * Cardano Network Configuration
+ * 
+ * Selects and exports network-specific parameters based on the configured network:
+ * - Era start time and slot
+ * - Epoch boundaries and length
+ * - Explorer URLs and utilities
+ * 
+ * @throws Error if network is undefined
+ */
 export const network = (() => {
   if (cardanoNetwork === 'Mainnet') {
     return {
@@ -34,6 +53,16 @@ export const network = (() => {
   }
 })()
 
+/**
+ * OADA Network Configuration
+ * 
+ * Selects and exports OADA-specific configuration based on the Cardano network:
+ * - Network endpoints
+ * - API configurations
+ * - Service URLs
+ * 
+ * @throws Error if network is undefined
+ */
 export const oadaNetwork = (() => {
   if (cardanoNetwork === 'Mainnet') {
     return {

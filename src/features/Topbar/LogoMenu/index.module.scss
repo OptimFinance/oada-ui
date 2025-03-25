@@ -1,30 +1,54 @@
+/**
+ * LogoMenu Component Styles
+ *
+ * Defines the visual presentation for the application's logo menu component.
+ * Features a dark theme design with a pill-shaped container that includes
+ * the logo, title, and a dropdown indicator.
+ */
+
 @import "src/assets/variables";
 
+/* Logo Container
+-------------------------------------------------- */
 .logoWrapper {
+  // Container dimensions and spacing
   height: 46px;
   padding: 0 $gapMxs;
+
+  // Flexbox layout for logo and title alignment
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: #1A1A25;
-  border: 1px solid #3C3C55;
-  border-radius: 38px;
-  cursor: pointer;
+
+  // Visual styling
+  background: #1A1A25;  // Dark theme background
+  border: 1px solid #3C3C55;  // Subtle border for depth
+  border-radius: 38px;  // Pill shape
+  cursor: pointer;  // Indicates interactivity
 }
 
+/* Logo Image
+-------------------------------------------------- */
 .logo {
+  // Fixed dimensions to maintain consistent sizing
   width: 30px;
   height: 30px;
 }
 
+/* Logo Title
+-------------------------------------------------- */
 .logoTitle {
+  // Typography
   color: $colorBaseWhite;
   font-size: $fontM;
   font-weight: $semiBold;
-  padding-right: 24px;
-  margin-left: 10px;
-  position: relative;
 
+  // Spacing and positioning
+  padding-right: 24px;  // Space for dropdown icon
+  margin-left: 10px;  // Gap between logo and text
+  position: relative;  // For dropdown icon positioning
+
+  // Dropdown chevron icon
   &:after {
     position: absolute;
     right: 0;

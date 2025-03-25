@@ -1,7 +1,27 @@
+/**
+ * FAQ Content Data
+ * 
+ * This file contains the static content for the FAQ section of the Optim platform.
+ * It defines a comprehensive list of frequently asked questions and their answers,
+ * organized by key platform concepts and common user inquiries.
+ * 
+ * Content Categories:
+ * - Platform Fundamentals (SPO Bonds, OPools, Borrow Offers)
+ * - Token Types (EQT, BT, Bond NFT)
+ * - Platform Mechanics (Bond lifecycle, cancellation, interest)
+ * - User Guidance (Monitoring, liquidity access, troubleshooting)
+ * 
+ * Each FAQ item contains:
+ * @property {string} title - The question text
+ * @property {string} text - The answer content
+ * @property {string} id - Unique identifier for navigation and tracking
+ */
+
 export const faqContent = [
+  // Platform Fundamentals
   {
     title: 'What is an SPO Bond?',
-    text:"An SPO Bond is a loan agreement for non-custodial lending of staking rights to Stake Pool Operators from a pool of lenders. A smart contract locks lender’s ADA and allows a borrower to attach their stake key for a maximum duration as long as conditions are met (interest paid)",
+    text: "An SPO Bond is a loan agreement for non-custodial lending of staking rights to Stake Pool Operators from a pool of lenders. A smart contract locks lender's ADA and allows a borrower to attach their stake key for a maximum duration as long as conditions are met (interest paid)",
     id: '1',
   },
   {
@@ -14,14 +34,16 @@ export const faqContent = [
     text: "Borrow Offers are the terms (duration and interest) an SPO is willing to agree to if enough liquidity is provided for their Stake Pool.",
     id: '3',
   },
+
+  // Token Types and Mechanics
   {
     title: 'What are EQT (Equity Tokens)?',
-    text: "EQ Tokens are placeholder tokens that represent a user’s ownership share of an OPool that will fund a bond once full. After bond activation, they can be converted to Bond Tokens.",
+    text: "EQ Tokens are placeholder tokens that represent a user's ownership share of an OPool that will fund a bond once full. After bond activation, they can be converted to Bond Tokens.",
     id: '4',
   },
   {
     title: 'What are BT (Bond Tokens)?',
-    text: "Bond Tokens are tokens denominating a user’s fractional position of a bond loan. As Cardano Native Tokens, they can be used to interact with the wider DeFi ecosystem, such as marketplaces and lending protocols. At maturity they can be exchanged for the underlying ADA plus all accrued interest.",
+    text: "Bond Tokens are tokens denominating a user's fractional position of a bond loan. As Cardano Native Tokens, they can be used to interact with the wider DeFi ecosystem, such as marketplaces and lending protocols. At maturity they can be exchanged for the underlying ADA plus all accrued interest.",
     id: '5',
   },
   {
@@ -29,6 +51,8 @@ export const faqContent = [
     text: 'A token that allows you to cancel a particular pending bond, or change staking rights of a particular active bond. It indicates ownership of the borrow side of a bond.',
     id: '14' 
   },
+
+  // Platform Value Proposition
   {
     title: 'What is the motivation for SPOs to use these bonds?',
     text: "The hardest part of running a stake pool is attracting the first 1M ADA of liquidity because until you have enough live stake accumulated, the staking returns are well below that of the average competitors. This essentially forces new SPOs to ask their delegators for support while offering a lesser return than the average established stake pool. This unfortunate dynamic is the reason most new pools end up having to shut down before achieving sustainability.",
@@ -36,12 +60,14 @@ export const faqContent = [
   },
   {
     title: 'What is the motivation for Lenders to fund these bonds?',
-    text: "While liquidity providers receive an optimal and higher return than average when subsidies are included, this product is meant to facilitate and encourage the community’s support of network decentralization by lowering the entry barriers for small and new stake pools.",
+    text: "While liquidity providers receive an optimal and higher return than average when subsidies are included, this product is meant to facilitate and encourage the community's support of network decentralization by lowering the entry barriers for small and new stake pools.",
     id: '7',
   },
+
+  // User Operations and Lifecycle
   {
     title: 'Can I get my ADA back from a non-active OPool?',
-    text: "If you hold EQ tokens and these EQ tokens are part of an OPool that is pending (not yet ‘active’ in UI) a user can use them to withdraw their ADA from the OPool.",
+    text: "If you hold EQ tokens and these EQ tokens are part of an OPool that is pending (not yet 'active' in UI) a user can use them to withdraw their ADA from the OPool.",
     id: '8',
   },
   {
@@ -54,11 +80,15 @@ export const faqContent = [
     text: "At cancellation, liquidity providers receive an additional six epochs of Interest Buffer and can access the underlying liquidity immediately.",
     id: '10',
   },
+
+  // Best Practices and Guidelines
   {
     title: 'Do I have to monitor the health of my bonds?',
     text: "It is recommended for bond holders to check their bonds remain active and have not been closed at least once a month.",
     id: '11',
   },
+
+  // DeFi Integration
   {
     title: 'Can I sell my Bond Tokens to access liquidity?',
     text: "Absolutely, as Cardano Native Tokens you are able to trade Bond Tokens in secondary marketplaces or peer-to-peer exchanges. Whatever party holds the bond token at maturity can then redeem the underlying ADA plus all accumulated interest.",

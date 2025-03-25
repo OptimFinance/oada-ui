@@ -1,34 +1,56 @@
+/**
+ * Social Dropdown Menu Styles
+ *
+ * Defines the visual presentation for the social links dropdown menu.
+ * Features a dark theme design with hover effects, icon containers,
+ * and a customized trigger button with dots indicator.
+ */
+
 @import "src/assets/variables";
 
+/* Dropdown Menu Container
+-------------------------------------------------- */
 .socialMenu {
+  // Positioning
+  position: absolute;
+  top: 50px;
+  right: 10px;
+
+  // Visual styling
   background: $colorShade110;
   border-radius: 20px;
   padding: $gapS;
   margin: 0;
-  position: absolute;
-  top: 50px;
-  right: 10px;
 }
 
+/* Menu Item Styling
+-------------------------------------------------- */
 .socialMenuItem {
   margin-bottom: 10px;
 
+  // Remove margin from last item to maintain consistent spacing
   &:last-child {
     margin-bottom: 0;
   }
 }
 
+/* Social Link Styling
+-------------------------------------------------- */
 .link {
   display: flex;
   align-items: center;
   color: $colorBaseWhite;
 }
 
+/* Icon Container
+-------------------------------------------------- */
 .icon {
+  // Visual styling
   background: $colorShade100;
   border-radius: 8px;
   margin-right: 13px;
 
+  // Icon wrapper dimensions and alignment
   > div {
     width: 30px;
     height: 30px;
@@ -38,20 +60,28 @@
   }
 }
 
+/* Dropdown Trigger Button
+-------------------------------------------------- */
 .socialMenuButton {
+  // Layout and dimensions
   display: flex;
   justify-content: center;
   align-items: center;
   width: 36px;
   height: 36px;
-  border-radius: 50%;
   margin-left: 6px;
+  
+  // Visual styling
   background: $colorShade110;
-  transition: 0.2s;
+  border-radius: 50%;  // Circular button
   border: 1px solid transparent;
   position: relative;
   cursor: pointer;
 
+  // Transition for hover effect
+  transition: 0.2s;
+
+  // Interactive states
   &:hover {
     border-color: $colorBaseWhite;
   }
@@ -60,6 +90,7 @@
     border-color: $colorBaseWhite;
   }
 
+  // Dots icon
   &:before {
     position: relative;
     height: 20px;

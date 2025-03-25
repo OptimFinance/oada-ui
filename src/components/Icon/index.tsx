@@ -1,4 +1,18 @@
+/**
+ * Icon Component
+ * 
+ * A centralized icon system that provides a consistent interface for using SVG icons throughout the application.
+ * This component acts as a registry of all available icons, allowing them to be referenced by name.
+ * 
+ * Benefits:
+ * - Consistent usage pattern across the application
+ * - Central place to manage all icons
+ * - Easy to swap or update icons without changing component usage
+ * - Allows for standardized styling and sizing
+ */
+
 import React from "react";
+// Import all SVG icon assets
 import Plus from "../../assets/icons/plus.svg";
 import file_check from "../../assets/icons/file_check.svg";
 import pie_chart from "../../assets/icons/pie_chart.svg";
@@ -19,16 +33,60 @@ import copy_clipboard from "../../assets/icons/copy_clipboard.svg";
 import info from "../../assets/icons/li_info.svg";
 import chevron_left from "../../assets/icons/chevron-left.svg";
 import li_wand from "../../assets/icons/li_wand.svg";
-import { ReactSVG } from "react-svg";
+import { ReactSVG } from "react-svg"; // Library for rendering SVG files
 
+/**
+ * Props for the Icon component
+ * 
+ * @property name - The identifier for the icon to display (matches a case in the switch statement)
+ * @property size - Optional size parameter (not currently implemented in rendering)
+ * @property className - Optional CSS class to apply to the icon for styling
+ */
 interface IconProps {
   name?: string;
   size?: number;
   className?: string;
 }
 
+/**
+ * Icon Component
+ * 
+ * Renders an SVG icon based on the provided name.
+ * Falls back to the Plus icon if an unknown name is provided.
+ * 
+ * @example
+ * // Basic usage
+ * <Icon name="shield" />
+ * 
+ * // With custom class for styling
+ * <Icon name="arrow_right" className="button-icon" />
+ * 
+ * Available icons:
+ * - plus
+ * - file_check
+ * - pie_chart
+ * - down_right
+ * - up_right
+ * - bar_chart
+ * - li_bar_chart
+ * - shield
+ * - jewell
+ * - shield_check
+ * - arrow_right
+ * - copy
+ * - eternl
+ * - gem
+ * - arrow_down
+ * - wallet
+ * - copy_clipboard
+ * - info
+ * - chevron_left
+ * - magic (renders li_wand)
+ */
 export const Icon: React.FC<IconProps> = (props) => {
   const { name, className } = props;
+  
+  // Determine which icon to use based on the name prop
   let icon;
   switch (name) {
     case "plus":
@@ -92,8 +150,11 @@ export const Icon: React.FC<IconProps> = (props) => {
       icon = li_wand;
       break;
     default:
+      // Fall back to Plus icon if name is not recognized
       icon = Plus;
       break;
   }
+  
+  // Render the selected SVG icon using ReactSVG component
   return <ReactSVG className={className} src={icon} />;
 };

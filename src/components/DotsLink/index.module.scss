@@ -1,37 +1,50 @@
+/**
+ * DotsLink Component Styling
+ * 
+ * SCSS module that defines the styling for the DotsLink component - a truncated
+ * text link that shows an ellipsis (...) when text overflows and displays
+ * a trailing icon based on its variant (link or copy).
+ */
+
+/* Import project variables (colors, spacing, etc.) */
 @import "src/assets/variables";
 
+/* Base styling for the dots link component */
 .dotsLink {
-  display: inline-block;
-  position: relative;
-  font-size: $fontS;
-  font-weight: $regular;
-  padding-right: 25px;
-  transition: 0.2s;
-  color: $colorBaseWhite;
-  max-width: 250px;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  overflow: hidden; 
-  cursor: pointer;
+  display: inline-block;              /* Allow component to have block properties while flowing inline */
+  position: relative;                 /* For absolute positioning of icons */
+  font-size: $fontS;                  /* Smaller font size */
+  font-weight: $regular;              /* Regular font weight */
+  padding-right: 25px;                /* Space for the trailing icon */
+  transition: 0.2s;                   /* Smooth transition for hover effect */
+  color: $colorBaseWhite;             /* White text color */
+  max-width: 250px;                   /* Limit width to enforce truncation */
+  white-space: nowrap;                /* Prevent text from wrapping */
+  text-overflow: ellipsis;            /* Show ellipsis (...) for truncated text */
+  overflow: hidden;                   /* Hide overflowing text */
+  cursor: pointer;                    /* Pointer cursor to indicate interactivity */
 
+  /* External link variant - displays a link icon */
   &.link {
     &:after {
-      position: absolute;
-      right: 0;
-      top: -3px;
-      content: url('../../assets/icons/link.svg');
+      position: absolute;             /* Position icon absolutely */
+      right: 0;                       /* Align to the right */
+      top: -3px;                      /* Slight vertical adjustment */
+      content: url('../../assets/icons/link.svg'); /* Link icon */
     }
   }
 
+  /* Copy variant - displays a copy icon */
   &.copy {
     &:after {
-      position: absolute;
-      right: 4px;
-      content: url("../../assets/icons/copyID.svg");
+      position: absolute;             /* Position icon absolutely */
+      right: 4px;                     /* Align to the right with slight offset */
+      content: url("../../assets/icons/copyID.svg"); /* Copy icon */
     }
   }
 
+  /* Hover effect - reduce opacity for visual feedback */
   &:hover {
-    opacity: 0.7;
+    opacity: 0.7;                     /* Slightly transparent on hover */
   }
 }

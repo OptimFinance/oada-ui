@@ -1,16 +1,43 @@
+/**
+ * Transaction Recipe Module
+ * 
+ * This module provides a high-level abstraction for building Cardano transactions:
+ * - Defines transaction recipe types for structured transaction building
+ * - Handles conversion between recipe types and Lucid transaction types
+ * - Manages UTxO handling, minting, withdrawals, and outputs
+ * - Supports script validation and witness handling
+ */
+
 import { Assets, OutputData, Script, slotToBeginUnixTime, SLOT_CONFIG_NETWORK, UTxO } from "lucid-cardano";
 import { LucidExt, TxExt } from "./lucid-ext";
 
+/**
+ * Transaction Input with Spending Witness
+ * 
+ * Represents a UTxO being spent in a transaction, including:
+ * - Transaction input details (reference and output)
+ * - Witness data for validation
+ */
 export type TxInSpend = {
   txIn: TxIn;
   witness: SpendWitness;
 };
 
+/**
+ * Transaction Input
+ * 
+ * Represents a UTxO reference and its associated output data
+ */
 export type TxIn = {
   txOutRef: UtxoRef;
   txOut: TxOut;
 };
 
+/**
+ * Script Reference Type
+ * 
+ * Represents either an inline script or a reference to a script in a UTxO
+ */
 type TxRecipeScript = {
   tag: "Script";
   cbor: string;
@@ -20,6 +47,11 @@ type TxRecipeScript = {
   cbor: string;
 }
 
+/**
+ * Spending Witness Type
+ * 
+ * Represents either a key-based or script-based witness for spending UTxOs
+ */
 export type SpendWitness = {
   tag: "SpendWitnessKey";
 } | {
@@ -28,6 +60,15 @@ export type SpendWitness = {
   redeemer: string;
 };
 
+/**
+ * Transaction Output
+ * 
+ * Represents an output in a transaction, including:
+ * - Destination address
+ * - Value (assets)
+ * - Optional datum
+ * - Optional reference script
+ */
 export type TxOut = {
   address: string; // bech32
   value: Value;
@@ -35,24 +76,52 @@ export type TxOut = {
   refScript: string | null;
 };
 
-// assetClass: policyId.tokenName
+/**
+ * Value Type
+ * 
+ * Represents a collection of assets with their quantities
+ * Format: { "policyId.tokenName": bigint }
+ */
 export type Value = {
   [assetClass: string]: bigint;
 };
 
+/**
+ * Datum Type
+ * 
+ * Represents Plutus datum with CBOR encoding and inline flag
+ */
 export type Datum = {
   cbor: string;
   isInline: boolean;
 };
 
-// utxoRef: txHash#index
+/**
+ * UTxO Reference
+ * 
+ * Represents a UTxO reference in the format "txHash#index"
+ */
 export type UtxoRef = string;
 
+/**
+ * Minting Witness Type
+ * 
+ * Represents script-based witness for minting assets
+ */
 type MintWitness = {
   script: TxRecipeScript;
   redeemer: string;
 }
 
+/**
+ * Mint Operation Type
+ * 
+ * Represents a minting operation with:
+ * - Witness data
+ * - Policy ID
+ * - Token name
+ * - Amount to mint
+ */
 export type Mint = {
   witness: MintWitness;
   policyId: string;
@@ -60,6 +129,11 @@ export type Mint = {
   amount: bigint;
 };
 
+/**
+ * Withdrawal Witness Type
+ * 
+ * Represents either a key-based or script-based witness for withdrawing rewards
+ */
 export type WithdrawWitness = {
   tag: "WithdrawWitnessKey";
 } | {
@@ -68,12 +142,32 @@ export type WithdrawWitness = {
   redeemer: string;
 };
 
+/**
+ * Withdrawal Operation Type
+ * 
+ * Represents a withdrawal operation with:
+ * - Witness data
+ * - Stake address
+ * - Amount to withdraw
+ */
 export type Withdraw = {
   witness: WithdrawWitness;
   stakeAddress: string; // stake address bech32
   amount: bigint;
 }
 
+/**
+ * Transaction Recipe Type
+ * 
+ * Complete recipe for building a transaction, including:
+ * - Input references and spends
+ * - Minting operations
+ * - Withdrawal operations
+ * - Outputs
+ * - Validity intervals
+ * - Metadata
+ * - Required signers
+ */
 export type TxRecipe = {
   txInRefs: TxIn[];
   txInSpends: TxInSpend[];
@@ -86,6 +180,12 @@ export type TxRecipe = {
   requiredSignerPkhs: string[];
 };
 
+/**
+ * Converts a Value type to Lucid Assets type
+ * 
+ * @param value - Value to convert
+ * @returns Lucid Assets object
+ */
 const valueToLucidAssets = (value: Value): Assets => {
   // TODO
   const assets: Assets = {};
@@ -100,6 +200,12 @@ const valueToLucidAssets = (value: Value): Assets => {
   return assets;
 };
 
+/**
+ * Converts a Mint operation to Lucid mint format
+ * 
+ * @param mint - Mint operation to convert
+ * @returns Tuple of [Assets, MintWitness]
+ */
 const mintToLucidMint = (mint: Mint): [Assets, MintWitness] => {
   const policyId = mint.policyId;
   const tokenName = mint.tokenName;
@@ -111,6 +217,12 @@ const mintToLucidMint = (mint: Mint): [Assets, MintWitness] => {
   return [assets, mint.witness]
 }
 
+/**
+ * Converts multiple Mint operations to Lucid mint format
+ * 
+ * @param mints - Array of mint operations to convert
+ * @returns Array of [Assets, MintWitness] tuples
+ */
 const mintsToLucidMints = (mints: Mint[]): [Assets, MintWitness][] => {
   const lucidMints: [Assets, MintWitness][] = []
   for (const mint of mints) {
@@ -119,6 +231,12 @@ const mintsToLucidMints = (mints: Mint[]): [Assets, MintWitness][] => {
   return lucidMints;
 };
 
+/**
+ * Converts a TxInSpend to a UTxO and Witness pair
+ * 
+ * @param spend - Transaction input spend to convert
+ * @returns Tuple of [UTxO, SpendWitness]
+ */
 const txInSpendToUTxOWitnessPair = (
   spend: TxInSpend,
 ): [UTxO, SpendWitness] => {
@@ -127,12 +245,24 @@ const txInSpendToUTxOWitnessPair = (
   return [utxo, witness];
 };
 
+/**
+ * Converts a UTxO reference to a [txHash, outputIndex] pair
+ * 
+ * @param utxoRef - UTxO reference to convert
+ * @returns Tuple of [txHash, outputIndex]
+ */
 const utxoRefToPair = (utxoRef: UtxoRef): [string, number] => {
   // NOTE: if this errors it's a bug
   const [txHash, outputIndex] = utxoRef.split("#");
   return [txHash, Number(outputIndex)];
 };
 
+/**
+ * Converts a TxIn to a Lucid UTxO
+ * 
+ * @param txIn - Transaction input to convert
+ * @returns Lucid UTxO object
+ */
 const txInToUTxO = (txIn: TxIn): UTxO => {
   const [txHash, outputIndex] = utxoRefToPair(txIn.txOutRef);
   const txOut = txIn.txOut;
@@ -157,10 +287,22 @@ const txInToUTxO = (txIn: TxIn): UTxO => {
   };
 };
 
-// 0. Tx.complete() is monkey patched so that it can take (virtual) utxos that we give it
-// 1. we must also make sure to give it a change address (this is the default)
-// 2. we must also make sure to use nativeUplc (this is the default)
-// The above allows this function to be almost pure when `complete()` is called.
+/**
+ * Converts a Transaction Recipe to a Lucid Transaction
+ * 
+ * This function handles:
+ * - Reading from UTxOs
+ * - Collecting inputs with witnesses
+ * - Minting assets
+ * - Withdrawing rewards
+ * - Setting outputs
+ * - Configuring validity intervals
+ * - Adding required signers
+ * 
+ * @param lucid - Lucid instance
+ * @param txRecipe - Transaction recipe to convert
+ * @returns Lucid Transaction
+ */
 export const txRecipeToTx =
   (lucid: LucidExt) => (txRecipe: TxRecipe): TxExt => {
     let tx = lucid.newTx();

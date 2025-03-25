@@ -1,121 +1,150 @@
+/**
+ * InfoPanel Component Styling
+ * 
+ * SCSS module for the InfoPanel/Bond card UI component - a premium content panel 
+ * with gradient borders, diamond icon, and structured information display.
+ * Features responsive design for various screen sizes and special visual effects.
+ */
+
+/* Import project variables (colors, spacing, etc.) */
 @import "src/assets/variables";
 
+/* Main wrapper with gradient border effect */
 .bondCardWrapper {
-  width: 100%;
-  max-width: 540px;
-  border-radius: $panelBorderRadius;
-  border: double 2px transparent;
+  width: 100%;                     /* Fill available width */
+  max-width: 540px;                /* Limit maximum width */
+  border-radius: $panelBorderRadius; /* Rounded corners */
+  border: double 2px transparent;  /* Transparent double border for gradient effect */
+  /* Gradient border effect using multiple background images */
   background-image: linear-gradient(#15151E, #15151E), linear-gradient(200deg, #9792E9, #2A54EB);
-  background-origin: border-box;
-  background-clip: content-box, border-box;
+  background-origin: border-box;   /* Extend background to border */
+  background-clip: content-box, border-box; /* Clip background differently for content vs border */
 }
 
+/* Inner content area of the card */
 .bondCard {
-  padding: $gapLL;
+  padding: $gapLL;                 /* Large internal padding */
+  
+  /* Variant with no top padding */
   &.noTopPadding {
     padding-top: 0;
   }
 }
 
+/* Main title with gradient text effect and diamond icon */
 .cardTitle {
-  font-size: $font2XxL;
-  text-transform: uppercase;
+  font-size: $font2XxL;            /* Very large font size */
+  text-transform: uppercase;       /* All caps text */
+  /* Gradient text effect */
   background: linear-gradient(269.81deg, #FFFFFF 2.38%, rgba(255, 255, 255, 0.7) 101.77%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  text-fill-color: transparent;
-  position: relative;
-  padding-top: 140px;
-  text-align: center;
+  -webkit-background-clip: text;   /* Clip background to text (for webkit browsers) */
+  -webkit-text-fill-color: transparent; /* Make text transparent to show background */
+  background-clip: text;           /* Standard property for text clipping */
+  text-fill-color: transparent;    /* Standard property for transparent text */
+  position: relative;              /* For absolute positioning of the icon */
+  padding-top: 140px;              /* Space for the diamond icon above */
+  text-align: center;              /* Center the title text */
 
+  /* Diamond icon above the title */
   &:before {
-    content: "";
+    content: "";                   /* Empty content for pseudo-element */
     display: inline-block;
-    background-image: url("../../assets/icons/diamond-512.svg");
-    background-size: 120px 120px;
-    width: 120px;
-    height: 120px;
-    // content: url('../../assets/images/briliant.svg');
-    position: absolute;
-    top: 0;
-    left: 50%;
-    transform: translate(-50%, 0);
+    background-image: url("../../assets/icons/diamond-512.svg"); /* Diamond icon */
+    background-size: 120px 120px;  /* Icon size */
+    width: 120px;                  /* Width of icon area */
+    height: 120px;                 /* Height of icon area */
+    // content: url('../../assets/images/briliant.svg'); /* Commented out alternative */
+    position: absolute;            /* Position independently of text flow */
+    top: 0;                        /* Position at the top */
+    left: 50%;                     /* Center horizontally */
+    transform: translate(-50%, 0); /* Adjust for perfect centering */
   }
 }
 
+/* Subtitle styling */
 .cardSubtitle {
-  color: $colorViolet300;
-  text-align: center;
-  margin-top: 10px;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
+  color: $colorViolet300;          /* Purple/violet color */
+  text-align: center;              /* Center the subtitle */
+  margin-top: 10px;                /* Space below the title */
+  text-transform: uppercase;       /* All caps text */
+  letter-spacing: 0.1em;           /* Increased letter spacing for style */
 }
 
+/* Container for the main action button */
 .cardButtonWrapper {
-  display: flex;
-  justify-content: center;
-  width: 100%;
-  margin-top: 30px;
+  display: flex;                   /* Flex for centering */
+  justify-content: center;         /* Center horizontally */
+  width: 100%;                     /* Full width */
+  margin-top: 30px;                /* Space above the button */
 }
 
+/* Main action button styling */
 .cardButton {
-  font-weight: $semiBold;
-  font-size: pxToRem(18);
-  border: 1px solid $colorShade90;
-  padding: $gapXs $gapML 14px;
-  border-radius: 20px;
+  font-weight: $semiBold;          /* Semi-bold text */
+  font-size: pxToRem(18);          /* 18px converted to rem units */
+  border: 1px solid $colorShade90; /* Subtle border */
+  padding: $gapXs $gapML 14px;     /* Asymmetric padding (top, sides, bottom) */
+  border-radius: 20px;             /* Rounded corners */
 }
 
+/* Two-column data table layout */
 .tableWrapper {
-  column-gap: 40px;
-  columns: 2;
-  column-rule: 1px solid $colorShade90;
-  border: 1px solid $colorShade90;
-  border-radius: 12px;
-  padding: $gapS;
-  margin-top: 30px;
+  column-gap: 40px;                /* Space between columns */
+  columns: 2;                      /* Two-column layout */
+  column-rule: 1px solid $colorShade90; /* Vertical divider between columns */
+  border: 1px solid $colorShade90; /* Border around the table */
+  border-radius: 12px;             /* Rounded corners */
+  padding: $gapS;                  /* Internal padding */
+  margin-top: 30px;                /* Space above the table */
+  
+  /* Responsive: switch to single column on small screens */
   @media only screen and (max-width: 540px) {
     columns: 1;
   }
 }
 
+/* Row in the data table (label-value pair) */
 .tableCellPair {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 10px;
-  font-size: $fontS;
+  display: flex;                   /* Horizontal layout */
+  justify-content: space-between;  /* Push label and value to opposite sides */
+  align-items: center;             /* Vertically center */
+  margin-bottom: 10px;             /* Space between rows */
+  font-size: $fontS;               /* Smaller font size */
 }
 
+/* Individual cell in the data table */
 .tableCell {
-
+  /* Label cell (first child) */
   &:first-child {
-    color: $colorOptimGray200;
-    padding-right: $gapXxs;
-    flex-shrink: 0;
+    color: $colorOptimGray200;     /* Muted gray color for labels */
+    padding-right: $gapXxs;        /* Space between label and value */
+    flex-shrink: 0;                /* Prevent label from shrinking */
   }
 
+  /* Value cell (last child) */
   &:last-child {
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    overflow: hidden;
+    white-space: nowrap;           /* Keep value on one line */
+    text-overflow: ellipsis;       /* Show ellipsis for overflow */
+    overflow: hidden;              /* Hide overflow */
   }
 }
 
+/* Tablet responsiveness */
 @media only screen and (max-width: $breakpointTablet) {
   .bondCardWrapper {
-    max-width: 100%;
-    margin-bottom: 20px;
+    max-width: 100%;               /* Full width on tablets */
+    margin-bottom: 20px;           /* Add bottom margin */
   }
 }
 
+/* Mobile phone responsiveness */
 @media only screen and (max-width: $breakpointPhone) {
   .tableColumn {
-    width: 100%;
-    margin-right: 0;
-    margin-bottom: 10px;
+    width: 100%;                   /* Full width columns */
+    margin-right: 0;               /* Remove right margin */
+    margin-bottom: 10px;           /* Add bottom margin */
 
+    /* Remove column divider on mobile */
     &:after {
       display: none;
     }

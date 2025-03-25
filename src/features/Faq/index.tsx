@@ -1,3 +1,21 @@
+/**
+ * FAQ Section Component
+ * 
+ * Main component for the FAQ section that displays categorized questions and answers
+ * about the Optim platform. Features include:
+ * - Category navigation cards with icons
+ * - Expandable/collapsible accordion items
+ * - State management for active FAQ items
+ * - Responsive grid layout
+ * 
+ * The FAQ content covers key platform concepts including:
+ * - Bonds and SPO Bonds
+ * - Borrow Offers
+ * - OPools
+ * - Equity Tokens
+ * - Platform usage guides
+ */
+
 import { useState } from "react";
 import links from "../../assets/icons/cylinder-512.svg";
 import bond from "../../assets/icons/diamond-512.svg";
@@ -12,6 +30,12 @@ import CustomTitle from "src/components/Title";
 import { Text } from "src/components/ui/typography";
 // import { v4 as uuidv4 } from 'uuid';
 
+/**
+ * FAQ Category Icons Configuration
+ * 
+ * Defines the navigation cards shown at the top of the FAQ section.
+ * Each category links to its corresponding FAQ items below.
+ */
 const faqIcons = [
   {
     id: "1",
@@ -40,6 +64,18 @@ const faqIcons = [
   },
 ];
 
+/**
+ * FAQ Content Array
+ * 
+ * Comprehensive list of FAQ items with questions and answers about the platform.
+ * Each item includes:
+ * - Question title
+ * - Answer content (as React nodes for rich formatting)
+ * - Unique identifier for navigation
+ * 
+ * Content is organized by topic and covers platform features, troubleshooting,
+ * and common user questions.
+ */
 export const faqContent = [
   {
     title: "What is an SPO Bond?",
@@ -51,7 +87,7 @@ export const faqContent = [
           rights to Stake Pool Operators from a pool of lenders.
         </Text>
         <Text tone="muted">
-          A smart contract locks lender’s ADA and allows a borrower to attach
+          A smart contract locks lender's ADA and allows a borrower to attach
           their stake key for a maximum duration as long as conditions are met
           (interest paid)
         </Text>
@@ -104,7 +140,7 @@ export const faqContent = [
       <Text tone="muted">
         While liquidity providers receive an optimal and higher return than
         average when subsidies are included, this product is meant to facilitate
-        and encourage the community’s support of network decentralization by
+        and encourage the community's support of network decentralization by
         lowering the entry barriers for small and new stake pools.
       </Text>
     ),
@@ -115,7 +151,7 @@ export const faqContent = [
     text: "",
     children: (
       <Text tone="muted">
-        EQ Tokens are placeholder tokens that represent a user’s ownership share
+        EQ Tokens are placeholder tokens that represent a user's ownership share
         of an OPool that will fund a bond once full. After bond activation, they
         can be converted to BT (Bond Tokens).
       </Text>
@@ -129,7 +165,7 @@ export const faqContent = [
       <>
         <Text tone="muted">
           {
-            "If you hold EQ tokens and these EQ tokens are part of an OPool that is not yet activated (pool cards located in ‘Your Page > Pending OPools’ correspond to such pending OPools) you can withdraw ADA corresponding to the number of EQ tokens you have from the OPool."
+            "If you hold EQ tokens and these EQ tokens are part of an OPool that is not yet activated (pool cards located in 'Your Page > Pending OPools' correspond to such pending OPools) you can withdraw ADA corresponding to the number of EQ tokens you have from the OPool."
           }
         </Text>
         <Text tone="muted">
@@ -145,7 +181,7 @@ export const faqContent = [
     text: "",
     children: (
       <Text tone="muted">
-        Bond Tokens are tokens denominating a user’s fractional position of a
+        Bond Tokens are tokens denominating a user's fractional position of a
         bond loan. As Cardano Native Tokens, they can be used to interact with
         the wider DeFi ecosystem, such as marketplaces and lending protocols. At
         maturity they can be exchanged for the underlying ADA plus all accrued
@@ -246,7 +282,7 @@ export const faqContent = [
     children: (
       <Text tone="muted">
         {
-          "You redeem ADA by clicking the Redeem button on cards at ‘Your Page > Bond Positions’ in the ‘Closed Position’ section."
+          "You redeem ADA by clicking the Redeem button on cards at 'Your Page > Bond Positions' in the 'Closed Position' section."
         }
       </Text>
     ),
@@ -353,24 +389,38 @@ export const faqContent = [
   },
 ];
 
+/**
+ * FAQ Section Component
+ * 
+ * Renders the complete FAQ section including navigation cards and
+ * expandable content items. Manages the active item state for
+ * accordion functionality.
+ * 
+ * @returns The complete FAQ section with navigation and content
+ */
 const Faq = () => {
+  // Track which FAQ item is currently expanded
   const [currentItemId, setCurrentItemId] = useState(faqContent[0]?.id);
+
   return (
     <div className={styles.container}>
+      {/* Page title */}
       <CustomTitle title="Faq" />
+
+      {/* Navigation cards grid */}
       <div className={styles.wrapper}>
-        {faqIcons.map((item) => {
-          return (
-            <FaqCard
-              key={item.id}
-              id={item.id}
-              title={item.title}
-              image={item.image}
-              onClick={() => setCurrentItemId(item.id)}
-            />
-          );
-        })}
+        {faqIcons.map((item) => (
+          <FaqCard
+            key={item.id}
+            id={item.id}
+            title={item.title}
+            image={item.image}
+            onClick={() => setCurrentItemId(item.id)}
+          />
+        ))}
       </div>
+
+      {/* FAQ content section */}
       <h2 className={styles.heading}>FAQ</h2>
       <div>
         {faqContent.map((item) => (

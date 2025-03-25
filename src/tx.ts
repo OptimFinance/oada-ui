@@ -1,6 +1,24 @@
+/**
+ * Transaction Module
+ * 
+ * This module provides a wrapper around Lucid's transaction functionality:
+ * - Defines transaction interfaces for different stages (Partial, Complete, Signed)
+ * - Implements wrappers for Lucid transaction types
+ * - Provides a builder pattern for constructing transactions
+ * - Handles transaction signing and submission
+ */
+
 import {Address, Assets, CertificateValidator, Datum, Lovelace, MintingPolicy, PoolId, Redeemer, RewardAddress, Script, SpendingValidator, Tx as LucidTx, TxComplete as LucidTxComplete, TxSigned as LucidTxSigned, TxHash, UnixTime, UTxO, WithdrawalValidator, Lucid} from "lucid-cardano";
 // import {WalletProvider} from "../features/wallet/wallet";
 
+/**
+ * Transaction Complete Interface
+ * 
+ * Represents a transaction that is ready for signing and submission:
+ * - Provides signing methods
+ * - Handles transaction completion
+ * - Manages witness assembly
+ */
 interface TxComplete {
   sign(): this;
   /** Add an extra signature from a private key */
@@ -21,10 +39,27 @@ interface TxComplete {
   complete(): Promise<TxSigned>;
 }
 
+/**
+ * Transaction Signed Interface
+ * 
+ * Represents a fully signed transaction ready for submission:
+ * - Handles transaction submission to the network
+ */
 interface TxSigned {
   submit(): Promise<TxHash>;
 }
 
+/**
+ * Transaction Partial Interface
+ * 
+ * Represents a transaction under construction:
+ * - Handles UTxO collection
+ * - Manages asset minting
+ * - Controls payment outputs
+ * - Handles stake operations
+ * - Manages validity intervals
+ * - Attaches validators and policies
+ */
 interface TxPartial {
   collectFrom(utxos: UTxO[], redeemer?: Redeemer): this;
   /** All assets should be of the same Policy Id.
@@ -80,10 +115,20 @@ interface TxPartial {
   complete(): Promise<TxComplete>;
 }
 
+/**
+ * Transaction Builder Interface
+ * 
+ * Provides a factory method to start building a new transaction
+ */
 export interface TxBuilder {
   start(lucid: Lucid): TxPartial
 }
 
+/**
+ * Lucid Transaction Signed Wrapper
+ * 
+ * Wraps Lucid's signed transaction type to implement the TxSigned interface
+ */
 class LucidTxSignedWrapper implements TxSigned {
   constructor(private lucidTxSigned: LucidTxSigned) {}
   async submit(): Promise<string> {
@@ -92,6 +137,11 @@ class LucidTxSignedWrapper implements TxSigned {
   }
 }
 
+/**
+ * Lucid Transaction Complete Wrapper
+ * 
+ * Wraps Lucid's complete transaction type to implement the TxComplete interface
+ */
 class LucidTxCompleteWrapper implements TxComplete {
   constructor(private lucidTxComplete: LucidTxComplete) {}
   sign(): this {
@@ -104,6 +154,17 @@ class LucidTxCompleteWrapper implements TxComplete {
   }
 }
 
+/**
+ * Lucid Transaction Partial Wrapper
+ * 
+ * Wraps Lucid's transaction type to implement the TxPartial interface:
+ * - Handles all transaction building operations
+ * - Manages UTxO collection and spending
+ * - Controls asset minting and payments
+ * - Handles stake operations
+ * - Manages validity intervals
+ * - Attaches validators and policies
+ */
 class LucidTxPartialWrapper implements TxPartial {
   private lucidTx: LucidTx
   constructor(lucid: Lucid) {
@@ -182,6 +243,11 @@ class LucidTxPartialWrapper implements TxPartial {
   }
 }
 
+/**
+ * Lucid Transaction Builder
+ * 
+ * Factory object that creates new transaction instances
+ */
 export const lucidTxBuilder: TxBuilder = {
   start(lucid: Lucid) {
     return new LucidTxPartialWrapper(lucid)

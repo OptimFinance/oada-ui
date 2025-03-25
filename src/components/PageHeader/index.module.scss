@@ -1,11 +1,25 @@
+/**
+ * PageHeader Component Styling
+ * 
+ * SCSS module for the PageHeader component - a consistent header section 
+ * used at the top of different pages in the application.
+ * 
+ * The component provides uniform spacing and typography for page titles,
+ * establishing a clear visual hierarchy and consistent user experience
+ * across different sections of the application.
+ */
+
+/* Import design system variables for consistent styling */
 @import "src/assets/variables";
 
+/* Main container for the page header section */
 .pageHeader {
-  padding: 60px 0;
+  padding: 60px 0;     /* Substantial vertical padding to separate from content above and below */
 }
 
+/* Page title element with consistent typography */
 .pageTitle {
-  margin: 0;
-  font-size: pxToRem(36);
-  font-weight: $semiBold;
+  margin: 0;                 /* Remove default margins */
+  font-size: pxToRem(36);    /* Large, readable font size converted to rem units */
+  font-weight: $semiBold;    /* Semi-bold font weight for visual emphasis */
 }

@@ -1,3 +1,13 @@
+/**
+ * Service Worker Registration
+ * 
+ * This module handles service worker registration for Progressive Web App (PWA) functionality:
+ * - Enables offline capabilities
+ * - Improves load times on subsequent visits
+ * - Manages cache updates and content refreshing
+ * - Provides development and production configurations
+ */
+
 // This optional code is used to register a service worker.
 // register() is not called by default.
 
@@ -10,6 +20,25 @@
 // To learn more about the benefits of this model and instructions on how to
 // opt-in, read https://bit.ly/CRA-PWA
 
+/**
+ * Configuration type for service worker registration
+ * 
+ * @property onSuccess - Callback executed when service worker is successfully registered
+ * @property onUpdate - Callback executed when a new service worker is available
+ */
+type Config = {
+  onSuccess?: (registration: ServiceWorkerRegistration) => void;
+  onUpdate?: (registration: ServiceWorkerRegistration) => void;
+};
+
+/**
+ * Checks if the current environment is localhost
+ * 
+ * Validates against:
+ * - Standard localhost hostname
+ * - IPv6 localhost address [::1]
+ * - IPv4 localhost addresses (127.0.0.0/8)
+ */
 const isLocalhost = Boolean(
   window.location.hostname === 'localhost' ||
     // [::1] is the IPv6 localhost address.
@@ -20,11 +49,17 @@ const isLocalhost = Boolean(
     )
 );
 
-type Config = {
-  onSuccess?: (registration: ServiceWorkerRegistration) => void;
-  onUpdate?: (registration: ServiceWorkerRegistration) => void;
-};
-
+/**
+ * Registers the service worker for the application
+ * 
+ * @param config - Optional configuration for registration callbacks
+ * 
+ * Features:
+ * - Only registers in production environment
+ * - Validates service worker support
+ * - Handles different environments (localhost vs production)
+ * - Manages cache updates and content refreshing
+ */
 export function register(config?: Config) {
   if (process.env.NODE_ENV === 'production' && 'serviceWorker' in navigator) {
     // The URL constructor is available in all browsers that support SW.
@@ -59,6 +94,17 @@ export function register(config?: Config) {
   }
 }
 
+/**
+ * Registers a valid service worker and handles updates
+ * 
+ * @param swUrl - URL of the service worker script
+ * @param config - Optional configuration for registration callbacks
+ * 
+ * Features:
+ * - Handles service worker installation
+ * - Manages update notifications
+ * - Executes success/update callbacks
+ */
 function registerValidSW(swUrl: string, config?: Config) {
   navigator.serviceWorker
     .register(swUrl)
@@ -103,6 +149,17 @@ function registerValidSW(swUrl: string, config?: Config) {
     });
 }
 
+/**
+ * Validates and checks the service worker on localhost
+ * 
+ * @param swUrl - URL of the service worker script
+ * @param config - Optional configuration for registration callbacks
+ * 
+ * Features:
+ * - Verifies service worker existence
+ * - Handles content type validation
+ * - Manages offline mode detection
+ */
 function checkValidServiceWorker(swUrl: string, config?: Config) {
   // Check if the service worker can be found. If it can't reload the page.
   fetch(swUrl, {
@@ -133,6 +190,12 @@ function checkValidServiceWorker(swUrl: string, config?: Config) {
     });
 }
 
+/**
+ * Unregisters the service worker
+ * 
+ * Removes the service worker registration and its associated caches.
+ * Useful for development or when disabling PWA features.
+ */
 export function unregister() {
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.ready

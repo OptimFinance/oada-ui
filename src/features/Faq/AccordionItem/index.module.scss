@@ -1,16 +1,37 @@
+/**
+ * FAQ Accordion Item Styles
+ * 
+ * Defines the styling for individual FAQ accordion items, including:
+ * - Expandable/collapsible sections
+ * - Header and content areas
+ * - Responsive design adjustments
+ * - Interactive elements (buttons, hover states)
+ * 
+ * Uses design tokens from variables.scss for consistent theming:
+ * - Colors from the Optim design system
+ * - Standardized spacing ($gap variables)
+ * - Typography scale ($font variables)
+ * - Breakpoints for responsive design
+ */
+
 @import "src/assets/variables";
 
+// Main accordion item container
+// Provides base structure and bottom border for separation
 .accordionItem {
   overflow: hidden;
   margin-bottom: $gapS;
   padding-bottom: $gapM;
   border-bottom: 1px solid #3c3c55;
 
+  // Mobile-specific styling
   @media only screen and (max-width: $breakpointPhone) {
     border-radius: 15px;
   }
 }
 
+// Header section containing question and toggle button
+// Handles layout and interaction states
 .accordionHeader {
   padding: 0 $gapLL;
   display: flex;
@@ -21,10 +42,13 @@
   cursor: pointer;
   color: $colorBaseWhite;
 
+  // Question text styling
   .faqTitle {
     font-size: $fontM;
     margin: 0;
   }
+
+  // Toggle button container
   .button {
     height: 100%;
     display: flex;
@@ -32,10 +56,12 @@
     justify-content: center;
   }
 
+  // Mobile-specific button adjustments
   @media only screen and (max-width: $breakpointPhone) {
     .button {
       width: 60px;
 
+      // Scale down button icon for mobile
       img {
         transform: scale(0.9);
       }
@@ -43,15 +69,20 @@
   }
 }
 
+// Content area containing the answer text
+// Handles text formatting and spacing
 .accordionBody {
   padding: $gapM $gapLL;
   font-size: $fontM;
   font-weight: $regular;
   color: $colorOptimGray200;
 
+  // Adjust padding for mobile view
   @media only screen and (max-width: $breakpointPhone) {
     padding: $gapMxs 0;
   }
+
+  // Add spacing between paragraphs in the answer
   p:not(:first-child) {
     margin-top: $gapXs;
   }

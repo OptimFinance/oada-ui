@@ -1,34 +1,53 @@
+/**
+ * Tabs Component Styling
+ * 
+ * SCSS module for the Tabs component - a navigation interface that
+ * allows users to switch between different sections of content.
+ * 
+ * Features:
+ * - Horizontal tab layout with bottom border
+ * - Active tab indication with underline
+ * - Smooth transition effects
+ * - Support for tooltip elements
+ */
+
+/* Import design system variables for consistent styling */
 @import "src/assets/variables";
 
+/* Container for the entire tabs navigation bar */
 .tabsList {
-  width: 100%;  
-  border-bottom: 1px solid $colorShade90;
-  display: flex;
+  width: 100%;             /* Full width container */
+  border-bottom: 1px solid $colorShade90; /* Subtle bottom border for the tab list */
+  display: flex;           /* Horizontal layout for tabs */
 }
 
+/* Individual tab item */
 .tabsItem {
-  cursor: pointer;
-  font-weight: $semiBold;
-  font-size: $fontL;
-  margin-right: 30px;
+  cursor: pointer;         /* Indicate clickable element */
+  font-weight: $semiBold;  /* Semi-bold font weight for better readability */
+  font-size: $fontL;       /* Larger font size for tab labels */
+  margin-right: 30px;      /* Space between tabs */
 }
 
+/* Link/button inside each tab (default state) */
 .tabsLink {
-  padding-bottom: $gapS;
-  display: inline-flex;
-  transition: 0.2s;
-  border-bottom: 2px solid transparent;
-  outline: none;
+  padding-bottom: $gapS;   /* Bottom padding to ensure space for the indicator border */
+  display: inline-flex;    /* Allow contents to align properly */
+  transition: 0.2s;        /* Smooth transition between states */
+  border-bottom: 2px solid transparent; /* Invisible border that will be visible when active */
+  outline: none;           /* Remove browser focus outline */
 }
 
+/* Active state for the tab link/button */
 .tabsLinkActive {
-  padding-bottom: $gapS;
-  display: inline-flex;
-  border-bottom: 2px solid $colorBaseWhite;
-  color: $colorBaseWhite;
-  transition: 0.2s;
+  padding-bottom: $gapS;   /* Same padding as inactive for consistent alignment */
+  display: inline-flex;    /* Allow contents to align properly */
+  border-bottom: 2px solid $colorBaseWhite; /* White underline for active tab */
+  color: $colorBaseWhite;  /* White text for active tab */
+  transition: 0.2s;        /* Smooth transition between states */
 }
 
+/* Tooltip element that can appear next to tab labels */
 .tooltip {
-  margin-left: 5px;
+  margin-left: 5px;        /* Space between tab label and tooltip */
 }

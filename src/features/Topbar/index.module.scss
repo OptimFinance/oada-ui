@@ -1,23 +1,44 @@
+/**
+ * Topbar Component Styles
+ *
+ * Defines the visual presentation for the application's top navigation bar.
+ * Features a responsive container with centered content, wallet connection
+ * button, and flexible button alignment.
+ */
+
 @import "src/assets/variables";
 
+/* Main Container
+-------------------------------------------------- */
 .container {
+  // Layout constraints
   max-width: 1480px;
   margin: 0 auto;
+  padding: 14px $gapS;
+
+  // Flexbox layout
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 14px $gapS;
+
+  // Positioning context
   position: relative;
-  z-index: 101;
+  z-index: 101;  // Ensures topbar stays above other content
 }
 
+/* Connect Wallet Button
+-------------------------------------------------- */
 .connectButton {
+  // Consistent sizing
   height: 40px;
   line-height: 40px;
   font-size: $fontS;
 }
 
+/* Button Container
+-------------------------------------------------- */
 .buttonsWrapper {
+  // Flexbox for button alignment
   display: flex;
   align-items: center;
 }
