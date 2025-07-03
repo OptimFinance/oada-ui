@@ -6,6 +6,7 @@ import type { RootState, AppDispatch, GetThunkAPIConfig, ThunkAPI } from './inde
 import {useEffect, useLayoutEffect, useRef} from 'react';
 import * as L from 'lucid-cardano';
 import { LucidExt } from '../lucid-ext';
+import {blockfrostEndpoint, blockfrostKey} from 'src/config.local';
 
 
 // Use throughout your app instead of plain `useDispatch` and `useSelector`
@@ -281,4 +282,4 @@ function addressFromWithNetworkCheck(
 }
 
 // this should be in its own lucid service
-export const lucid: LucidExt = await Lucid.new(new BlockchainProvider('', undefined), cardanoNetwork);
+export const lucid: LucidExt = await Lucid.new(new BlockchainProvider(blockfrostEndpoint || '', blockfrostKey), cardanoNetwork);

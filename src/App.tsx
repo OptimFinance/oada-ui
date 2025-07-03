@@ -23,6 +23,7 @@ import { OADADashboard } from "./features/dAppHub/OADA/Dashboard";
 import { OADAMSE } from "./features/dAppHub/OADA/MintStakeEarn";
 import { EpochStakeAuctionDashboard } from "./features/dAppHub/EpochStakeAuction/Dashboard";
 import { EpochStakeAuctionBid } from "./features/dAppHub/EpochStakeAuction/Bid";
+import {YieldDonation} from "./features/dAppHub/YieldDonation";
 
 function App() {
   const dispatch = useAppDispatch();
@@ -98,7 +99,10 @@ function App() {
           <Route index element={<OADADashboard />} />
           <Route path="/dashboard" element={<OADADashboard />} />
           <Route path="dashboard" element={<OADADashboard />} />
-          <Route path="oada/mint-stake-earn" element={<OADAMSE />} />
+          <Route path="oada">
+            <Route path="mint-stake-earn" element={<OADAMSE />} />
+            <Route path="yield-donation" element={<YieldDonation />} />
+          </Route>
           <Route
             path="epoch-stake-auction/dashboard"
             element={<EpochStakeAuctionDashboard />}
