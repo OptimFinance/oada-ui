@@ -45,6 +45,7 @@ export interface WalletApiProvider {
  * - Vespr
  * - Lace
  * - NuFi
+ * - 1AM
  */
 const supportedProviders: { [key: string]: boolean } = {
   nami: true,
@@ -58,6 +59,7 @@ const supportedProviders: { [key: string]: boolean } = {
   vespr: true,
   lace: true,
   nufi: true,
+  "1am": true,
 };
 
 /**
