@@ -3,6 +3,7 @@
  * Import wallet icons for supported Cardano wallets
  */
 import { FC, useContext, useState } from "react";
+import oneAm from "../../../assets/icons/1am.svg";
 import eternl from "../../../assets/icons/eternl.png";
 import exodus from "../../../assets/icons/exodus.svg";
 import flint from "../../../assets/icons/flint.svg";
@@ -283,6 +284,25 @@ export const ConnectWallet: FC<Props> = ({
                   />
                 </span>
                 <span>Nufi</span>
+              </Button>
+            </li>
+
+            {/* 1AM Wallet */}
+            <li>
+              <Button
+                variant="secondary"
+                className="w-full rounded-xl justify-start"
+                onClick={dispatchSelectWallet("1am")}
+                disabled={!isChecked}
+              >
+                <span className={styles.icon}>
+                  <img
+                    src={oneAm}
+                    className={buttonStyles.invertOnHover}
+                    alt="1AM"
+                  />
+                </span>
+                <span>1AM</span>
               </Button>
             </li>
           </ul>
